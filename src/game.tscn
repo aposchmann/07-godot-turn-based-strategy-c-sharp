@@ -1,3 +1,26 @@
-[gd_scene format=3 uid="uid://bgkdke2xgg40w"]
+[gd_scene load_steps=4 format=3 uid="uid://bgkdke2xgg40w"]
+
+[sub_resource type="TileSet" id="TileSet_mu1t8"]
+tile_shape = 3
+tile_size = Vector2i(128, 128)
+
+[sub_resource type="TileSet" id="TileSet_7uq6d"]
+tile_shape = 3
+tile_size = Vector2i(128, 128)
+
+[sub_resource type="TileSet" id="TileSet_3msxb"]
+tile_shape = 3
+tile_size = Vector2i(128, 128)
 
 [node name="Game" type="Node"]
+
+[node name="HexagonTileMap" type="Node2D" parent="."]
+
+[node name="BaseLayer" type="TileMapLayer" parent="HexagonTileMap"]
+tile_set = SubResource("TileSet_mu1t8")
+
+[node name="BorderLayer" type="TileMapLayer" parent="HexagonTileMap"]
+tile_set = SubResource("TileSet_7uq6d")
+
+[node name="OverlayLayer" type="TileMapLayer" parent="HexagonTileMap"]
+tile_set = SubResource("TileSet_3msxb")
