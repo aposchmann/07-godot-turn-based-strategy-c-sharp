@@ -1,5 +1,4 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+﻿Microsoft Visual Studio Solution File, Format Version 17.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "07-godot-turn-based-strategy-c-sharp", "07-godot-turn-based-strategy-c-sharp.csproj", "{BD7AFF96-FFFD-4571-A301-C6931DFBA382}"
 EndProject
 Global
