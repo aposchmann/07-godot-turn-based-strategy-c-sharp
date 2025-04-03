@@ -16,9 +16,18 @@ public partial class TileMap : Node2D
         _baseLayer = GetNode<TileMapLayer>("BaseLayer");
         _borderLayer = GetNode<TileMapLayer>("BorderLayer");
         _overlayLayer = GetNode<TileMapLayer>("OverlayLayer");
+
+        GenerateTerrain();
     }
 
     public void GenerateTerrain()
     {
+        for (var x = 0; x < Width; x++)
+        {
+            for (var y = 0; y < Height; y++)
+            {
+                _baseLayer.SetCell(new Vector2I(x, y), 0, new Vector2I(0, 0));
+            }
+        }
     }
 }
