@@ -1,3 +1,3 @@
-# Godot tutorial: Turn based strategy game (C#)
+# Godot tutorial: Turn-based strategy game (C#)
 
-tbd
+Godot tutorial: Turn-based strategy game (C#)
