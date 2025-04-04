@@ -27,6 +27,7 @@ public partial class TileMap : Node2D
             for (var y = 0; y < Height; y++)
             {
                 _baseLayer.SetCell(new Vector2I(x, y), 0, new Vector2I(0, 0));
+                _borderLayer.SetCell(new Vector2I(x, y), 0, new Vector2I(0, 0));
             }
         }
     }
