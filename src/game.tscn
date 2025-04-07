@@ -1,7 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://bgkdke2xgg40w"]
+[gd_scene load_steps=10 format=3 uid="uid://bgkdke2xgg40w"]
 
 [ext_resource type="Script" uid="uid://poggrgpel5f8" path="res://src/TileMap.cs" id="1_3msxb"]
+[ext_resource type="Script" uid="uid://bewoc2m7rxspv" path="res://src/Camera.cs" id="1_kc8ui"]
 [ext_resource type="Texture2D" uid="uid://sa5w3ko02vl3" path="res://textures/terrain.png" id="2_xq6wo"]
+[ext_resource type="Texture2D" uid="uid://dbtm4g31e3hky" path="res://textures/overlay.png" id="4_bs6l1"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kc8ui"]
 texture = ExtResource("2_xq6wo")
@@ -20,15 +22,27 @@ tile_shape = 3
 tile_size = Vector2i(128, 128)
 sources/0 = SubResource("TileSetAtlasSource_kc8ui")
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pk08u"]
+texture = ExtResource("4_bs6l1")
+texture_region_size = Vector2i(128, 128)
+0:0/0 = 0
+0:1/0 = 0
+
 [sub_resource type="TileSet" id="TileSet_7uq6d"]
 tile_shape = 3
 tile_size = Vector2i(128, 128)
+sources/0 = SubResource("TileSetAtlasSource_pk08u")
 
 [sub_resource type="TileSet" id="TileSet_3msxb"]
 tile_shape = 3
 tile_size = Vector2i(128, 128)
 
 [node name="Game" type="Node"]
+
+[node name="Camera" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+position_smoothing_speed = 10.0
+script = ExtResource("1_kc8ui")
 
 [node name="TileMap" type="Node2D" parent="."]
 script = ExtResource("1_3msxb")
