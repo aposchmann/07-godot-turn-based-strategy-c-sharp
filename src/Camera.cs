@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using static System.Single;
@@ -33,7 +34,20 @@ public partial class Camera : Camera2D
         { "mouse_zoom_out", -ZoomSpeed }
     };
 
-    private string? _mouseWheelAction;
+    private TileMap? _tileMap;
+
+    private TileMap TileMap =>
+        _tileMap ??= GetNode<TileMap>("../TileMap") ?? throw new NullReferenceException();
+
+    private float? _leftBound;
+    private float? _rightBound;
+    private float? _topBound;
+    private float? _bottomBound;
+
+    private float LeftBound => _leftBound ??= ToGlobal(TileMap.ToLocal(new Vector2I(0, 0))).X + 100;
+    private float RightBound => _rightBound ??= ToGlobal(TileMap.ToLocal(new Vector2I(TileMap.Width, 0))).X - 100;
+    private float TopBound => _topBound ??= ToGlobal(TileMap.ToLocal(new Vector2I(0, 0))).Y + 50;
+    private float BottomBound => _bottomBound ??= ToGlobal(TileMap.ToLocal(new Vector2I(0, TileMap.Height))).Y - 50;
 
     public override void _PhysicsProcess(double delta)
     {
@@ -45,7 +59,9 @@ public partial class Camera : Camera2D
 
             var (x, y) = KeyboardMovements[key];
 
-            Position += new Vector2(x, y);
+            Position = new Vector2(
+                Clamp(Position.X + x, LeftBound, RightBound),
+                Clamp(Position.Y + y, TopBound, BottomBound));
         }
 
         foreach (var key in KeyboardZooms.Keys)
