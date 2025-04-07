@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using System.Linq;
 using Godot;
 using static System.Single;
+using static Godot.Input;
 
 namespace de.nodapo.turnbasedstrategygame;
 
@@ -13,7 +13,7 @@ public partial class Camera : Camera2D
     private const float ZoomMin = 0.1f;
     private const float ZoomMax = 3.0f;
 
-    private Dictionary<string, (int X, int Y)> MapMovements => new()
+    private Dictionary<string, (int X, int Y)> KeyboardMovements => new()
     {
         { "map_right", (Velocity, 0) },
         { "map_left", (-Velocity, 0) },
@@ -21,35 +21,51 @@ public partial class Camera : Camera2D
         { "map_down", (0, Velocity) }
     };
 
-    private Dictionary<string, float> MapZooms => new()
+    private Dictionary<string, float> KeyboardZooms => new()
     {
         { "map_zoom_in", ZoomSpeed },
         { "map_zoom_out", -ZoomSpeed }
+    };
+
+    private Dictionary<string, float> MouseZooms => new()
+    {
+        { "mouse_zoom_in", ZoomSpeed },
+        { "mouse_zoom_out", -ZoomSpeed }
     };
 
     private string? _mouseWheelAction;
 
     public override void _PhysicsProcess(double delta)
     {
-        _mouseWheelAction =
-            Input.IsActionJustReleased("mouse_zoom_in") ? "map_zoom_in" :
-            Input.IsActionJustReleased("mouse_zoom_out") ? "map_zoom_out" :
-            null;
+        var zoom = 0f;
 
-        MapMovements.Keys
-            .Where(key => Input.IsActionPressed(key))
-            .Select(key => MapMovements[key])
-            .ToList()
-            .ForEach(mapMovement => Position += new Vector2(mapMovement.X, mapMovement.Y));
+        foreach (var key in KeyboardMovements.Keys)
+        {
+            if (!IsActionPressed(key)) continue;
 
-        MapZooms.Keys
-            .Where(key => Input.IsActionPressed(key) || key.Equals(_mouseWheelAction))
-            .Select(key => MapZooms[key])
-            .ToList()
-            .ForEach(mapZoom => Zoom = new Vector2
-            {
-                X = Clamp(Zoom.X + mapZoom, ZoomMin, ZoomMax),
-                Y = Clamp(Zoom.Y + mapZoom, ZoomMin, ZoomMax)
-            });
+            var (x, y) = KeyboardMovements[key];
+
+            Position += new Vector2(x, y);
+        }
+
+        foreach (var key in KeyboardZooms.Keys)
+        {
+            if (!IsActionPressed(key)) continue;
+
+            zoom += KeyboardZooms[key];
+        }
+
+        foreach (var key in MouseZooms.Keys)
+        {
+            if (!IsActionJustReleased(key)) continue;
+
+            zoom += MouseZooms[key];
+        }
+
+        Zoom = new Vector2
+        {
+            X = Clamp(Zoom.X + zoom, ZoomMin, ZoomMax),
+            Y = Clamp(Zoom.Y + zoom, ZoomMin, ZoomMax)
+        };
     }
 }
