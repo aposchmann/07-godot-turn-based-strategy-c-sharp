@@ -33,7 +33,19 @@ public partial class Camera : Camera2D
         { "mouse_zoom_out", -ZoomSpeed }
     };
 
-    private string? _mouseWheelAction;
+    private float _leftBound, _rightBound, _topBound, _bottomBound;
+
+    private TileMap? _tileMap;
+
+    private TileMap TileMap => _tileMap ??= GetNode<TileMap>("../TileMap");
+
+    public override void _Ready()
+    {
+        _leftBound = ToGlobal(TileMap.ToLocal(new Vector2I(0, 0))).X + 100;
+        _rightBound = ToGlobal(TileMap.ToLocal(new Vector2I(TileMap.Width, 0))).X - 100;
+        _topBound = ToGlobal(TileMap.ToLocal(new Vector2I(0, 0))).Y + 50;
+        _bottomBound = ToGlobal(TileMap.ToLocal(new Vector2I(0, TileMap.Height))).Y - 50;
+    }
 
     public override void _PhysicsProcess(double delta)
     {
@@ -45,7 +57,9 @@ public partial class Camera : Camera2D
 
             var (x, y) = KeyboardMovements[key];
 
-            Position += new Vector2(x, y);
+            Position = new Vector2(
+                Clamp(Position.X + x, _leftBound, _rightBound),
+                Clamp(Position.Y + y, _topBound, _bottomBound));
         }
 
         foreach (var key in KeyboardZooms.Keys)
