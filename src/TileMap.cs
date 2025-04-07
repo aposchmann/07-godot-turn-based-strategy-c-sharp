@@ -1,19 +1,25 @@
+using System;
 using Godot;
 
 namespace de.nodapo.turnbasedstrategygame;
 
 public partial class TileMap : Node2D
 {
-    [Export] public int Width = 100;
-    [Export] public int Height = 60;
+    [Export] public int Width = 42;
+    [Export] public int Height = 42;
 
     private TileMapLayer? _baseLayer;
     private TileMapLayer? _borderLayer;
     private TileMapLayer? _overlayLayer;
 
-    private TileMapLayer BaseLayer => _baseLayer ??= GetNode<TileMapLayer>("BaseLayer");
-    private TileMapLayer BorderLayer => _borderLayer ??= GetNode<TileMapLayer>("BorderLayer");
-    private TileMapLayer OverlayLayer => _overlayLayer ??= GetNode<TileMapLayer>("OverlayLayer");
+    private TileMapLayer BaseLayer =>
+        _baseLayer ??= GetNode<TileMapLayer>("BaseLayer") ?? throw new NullReferenceException();
+
+    private TileMapLayer BorderLayer =>
+        _borderLayer ??= GetNode<TileMapLayer>("BorderLayer") ?? throw new NullReferenceException();
+
+    private TileMapLayer OverlayLayer =>
+        _overlayLayer ??= GetNode<TileMapLayer>("OverlayLayer") ?? throw new NullReferenceException();
 
     public override void _Ready()
     {
