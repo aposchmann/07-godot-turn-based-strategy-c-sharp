@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 
-namespace de.nodapo.turnbasedstrategygame;
+namespace de.nodapo.turnbasedstrategygame.Map;
 
-public partial class TileMap : Node2D
+public partial class HexMap : Node2D
 {
     [Export] public int Width = 42;
     [Export] public int Height = 42;
@@ -20,6 +21,8 @@ public partial class TileMap : Node2D
 
     private TileMapLayer OverlayLayer =>
         _overlayLayer ??= GetNode<TileMapLayer>("OverlayLayer") ?? throw new NullReferenceException();
+
+    private readonly Dictionary<Vector2I, Hex> _hexes = new();
 
     public override void _Ready()
     {

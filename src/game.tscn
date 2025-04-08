@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://bgkdke2xgg40w"]
 
-[ext_resource type="Script" uid="uid://poggrgpel5f8" path="res://src/TileMap.cs" id="1_3msxb"]
 [ext_resource type="Script" uid="uid://bewoc2m7rxspv" path="res://src/Camera.cs" id="1_kc8ui"]
+[ext_resource type="Script" uid="uid://8x5ghyweoj8g" path="res://src/Map/HexMap.cs" id="2_kc8ui"]
 [ext_resource type="Texture2D" uid="uid://sa5w3ko02vl3" path="res://textures/terrain.png" id="2_xq6wo"]
 [ext_resource type="Texture2D" uid="uid://dbtm4g31e3hky" path="res://textures/overlay.png" id="4_bs6l1"]
 
@@ -44,14 +44,14 @@ position_smoothing_enabled = true
 position_smoothing_speed = 10.0
 script = ExtResource("1_kc8ui")
 
-[node name="TileMap" type="Node2D" parent="."]
-script = ExtResource("1_3msxb")
+[node name="HexMap" type="Node2D" parent="."]
+script = ExtResource("2_kc8ui")
 
-[node name="BaseLayer" type="TileMapLayer" parent="TileMap"]
+[node name="BaseLayer" type="TileMapLayer" parent="HexMap"]
 tile_set = SubResource("TileSet_mu1t8")
 
-[node name="BorderLayer" type="TileMapLayer" parent="TileMap"]
+[node name="BorderLayer" type="TileMapLayer" parent="HexMap"]
 tile_set = SubResource("TileSet_7uq6d")
 
-[node name="OverlayLayer" type="TileMapLayer" parent="TileMap"]
+[node name="OverlayLayer" type="TileMapLayer" parent="HexMap"]
 tile_set = SubResource("TileSet_3msxb")
