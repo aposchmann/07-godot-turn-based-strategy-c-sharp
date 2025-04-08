@@ -4,10 +4,10 @@ public enum Terrain
 {
     Plains = 0,
     Water = 1,
-    Desert = 2,
-    Mountain = 3,
-    Ice = 4,
+    Mountain = 2,
+    Ice = 3,
+    Desert = 4,
     ShallowWater = 5,
-    Forest = 6,
-    Beach = 7
+    Beach = 6,
+    Forest = 7
 }
