@@ -7,7 +7,7 @@ public enum Terrain
     Mountain = 2,
     Ice = 3,
     Desert = 4,
-    ShallowWater = 5,
+    Coast = 5,
     Beach = 6,
     Forest = 7
 }

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Godot;
+using static de.nodapo.turnbasedstrategygame.Map.Terrain;
+using static Godot.FastNoiseLite.FractalTypeEnum;
 
 namespace de.nodapo.turnbasedstrategygame.Map;
 
@@ -33,6 +35,42 @@ public partial class HexMap : Node2D
 
     private void GenerateTerrain()
     {
+        var random = new Random();
+        var seed = random.Next(int.MaxValue);
+
+        var baseMap = new float[Width, Height];
+        var forestMap = new float[Width, Height];
+        var desertMap = new float[Width, Height];
+        var mountainMap = new float[Width, Height];
+
+        var noise = new FastNoiseLite();
+
+        noise.Seed = seed;
+        noise.Frequency = 0.008f;
+        noise.FractalType = Fbm;
+        noise.FractalOctaves = 4;
+        noise.FractalLacunarity = 2.25f;
+
+        var noiseMax = 0f;
+
+        for (var x = 0; x < Width; x++)
+        {
+            for (var y = 0; y < Height; y++)
+            {
+                baseMap[x, y] = Math.Abs(noise.GetNoise2D(x, y));
+
+                if (baseMap[x, y] > noiseMax) noiseMax = baseMap[x, y];
+            }
+        }
+
+        var terrainRanges = new List<(float Min, float Max, Terrain terrain)>()
+        {
+            (0, noiseMax / 10 * 2.5f, Water),
+            (noiseMax / 10 * 2.5f, noiseMax / 10 * 4.0f, Coast),
+            (noiseMax / 10 * 4.0f, noiseMax / 10 * 4.5f, Beach),
+            (noiseMax / 10 * 4.5f, noiseMax + 0.05f, Plains)
+        };
+
         for (var x = 0; x < Width; x++)
         {
             for (var y = 0; y < Height; y++)
