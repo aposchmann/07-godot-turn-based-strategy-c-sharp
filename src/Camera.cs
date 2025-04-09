@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using de.nodapo.turnbasedstrategygame.Map;
 using Godot;
 using static System.Single;
 using static Godot.Input;
@@ -13,6 +14,8 @@ public partial class Camera : Camera2D
 
     private const float ZoomMin = 0.1f;
     private const float ZoomMax = 3.0f;
+    private const float HorizontalPadding = 100;
+    private const float VerticalPadding = 50;
 
     private Dictionary<string, (int X, int Y)> KeyboardMovements => new()
     {
@@ -34,20 +37,27 @@ public partial class Camera : Camera2D
         { "mouse_zoom_out", -ZoomSpeed }
     };
 
-    private TileMap? _tileMap;
+    private HexMap? _hexMap;
 
-    private TileMap TileMap =>
-        _tileMap ??= GetNode<TileMap>("../TileMap") ?? throw new NullReferenceException();
+    private HexMap HexMap =>
+        _hexMap ??= GetNode<HexMap>("../HexMap") ?? throw new NullReferenceException();
 
     private float? _leftBound;
     private float? _rightBound;
     private float? _topBound;
     private float? _bottomBound;
 
-    private float LeftBound => _leftBound ??= ToGlobal(TileMap.ToLocal(new Vector2I(0, 0))).X + 100;
-    private float RightBound => _rightBound ??= ToGlobal(TileMap.ToLocal(new Vector2I(TileMap.Width, 0))).X - 100;
-    private float TopBound => _topBound ??= ToGlobal(TileMap.ToLocal(new Vector2I(0, 0))).Y + 50;
-    private float BottomBound => _bottomBound ??= ToGlobal(TileMap.ToLocal(new Vector2I(0, TileMap.Height))).Y - 50;
+    private float LeftBound => _leftBound
+        ??= ToGlobal(HexMap.ToLocal(new Vector2I(0, 0))).X + HorizontalPadding;
+
+    private float RightBound => _rightBound
+        ??= ToGlobal(HexMap.ToLocal(new Vector2I(HexMap.Width, 0))).X - HorizontalPadding;
+
+    private float TopBound => _topBound
+        ??= ToGlobal(HexMap.ToLocal(new Vector2I(0, 0))).Y + VerticalPadding;
+
+    private float BottomBound => _bottomBound
+        ??= ToGlobal(HexMap.ToLocal(new Vector2I(0, HexMap.Height))).Y - VerticalPadding;
 
     public override void _PhysicsProcess(double delta)
     {
