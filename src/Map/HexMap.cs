@@ -39,38 +39,7 @@ public partial class HexMap : Node2D
         var random = new Random();
         var seed = random.Next(int.MaxValue);
 
-        var baseMap = new float[Width, Height];
-        var forestMap = new float[Width, Height];
-        var desertMap = new float[Width, Height];
-        var mountainMap = new float[Width, Height];
-
-        var noise = new FastNoiseLite();
-
-        noise.Seed = seed;
-        noise.Frequency = 0.008f;
-        noise.FractalType = Fbm;
-        noise.FractalOctaves = 4;
-        noise.FractalLacunarity = 2.25f;
-
-        var noiseMax = 0f;
-
-        for (var x = 0; x < Width; x++)
-        {
-            for (var y = 0; y < Height; y++)
-            {
-                baseMap[x, y] = Math.Abs(noise.GetNoise2D(x, y));
-
-                if (baseMap[x, y] > noiseMax) noiseMax = baseMap[x, y];
-            }
-        }
-
-        var terrainRanges = new List<(float Min, float Max, Terrain terrain)>
-        {
-            (0, noiseMax / 10 * 2.5f, Water),
-            (noiseMax / 10 * 2.5f, noiseMax / 10 * 4.0f, Coast),
-            (noiseMax / 10 * 4.0f, noiseMax / 10 * 4.5f, Beach),
-            (noiseMax / 10 * 4.5f, noiseMax + 0.05f, Plains)
-        };
+        var baseTerrain = GenerateBaseTerrain(seed);
 
         for (var x = 0; x < Width; x++)
         {
@@ -81,8 +50,10 @@ public partial class HexMap : Node2D
                 var hex = new Hex
                 {
                     Coordinates = coordinates,
-                    Terrain = terrainRanges
-                        .First(range => baseMap[x, y] >= range.Min && baseMap[x, y] < range.Max)
+                    Terrain = baseTerrain.NoiseRanges
+                        .First(range =>
+                            baseTerrain.NoiseValues[x, y] >= range.Min &&
+                            baseTerrain.NoiseValues[x, y] < range.Max)
                         .terrain
                 };
 
@@ -92,5 +63,40 @@ public partial class HexMap : Node2D
                 BorderLayer.SetCell(coordinates, 0, new Vector2I(0, 0));
             }
         }
+    }
+
+    private (float[,] NoiseValues, List<(float Min, float Max, Terrain terrain)> NoiseRanges)
+        GenerateBaseTerrain(int seed)
+    {
+        var noise = new FastNoiseLite();
+
+        noise.Seed = seed;
+        noise.Frequency = 0.008f;
+        noise.FractalType = Fbm;
+        noise.FractalOctaves = 4;
+        noise.FractalLacunarity = 2.25f;
+
+        var noiseValues = new float[Width, Height];
+        var noiseMax = 0f;
+
+        for (var x = 0; x < Width; x++)
+        {
+            for (var y = 0; y < Height; y++)
+            {
+                noiseValues[x, y] = Math.Abs(noise.GetNoise2D(x, y));
+
+                if (noiseValues[x, y] > noiseMax) noiseMax = noiseValues[x, y];
+            }
+        }
+
+        var ranges = new List<(float Min, float Max, Terrain terrain)>
+        {
+            (0, noiseMax / 10 * 2.5f, Water),
+            (noiseMax / 10 * 2.5f, noiseMax / 10 * 4.0f, Coast),
+            (noiseMax / 10 * 4.0f, noiseMax / 10 * 4.5f, Beach),
+            (noiseMax / 10 * 4.5f, noiseMax + 0.05f, Plains)
+        };
+
+        return (noiseValues, ranges);
     }
 }

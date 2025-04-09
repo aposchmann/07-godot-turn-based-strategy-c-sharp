@@ -14,6 +14,8 @@ public partial class Camera : Camera2D
 
     private const float ZoomMin = 0.1f;
     private const float ZoomMax = 3.0f;
+    private const float HorizontalPadding = 100;
+    private const float VerticalPadding = 50;
 
     private Dictionary<string, (int X, int Y)> KeyboardMovements => new()
     {
@@ -45,10 +47,17 @@ public partial class Camera : Camera2D
     private float? _topBound;
     private float? _bottomBound;
 
-    private float LeftBound => _leftBound ??= ToGlobal(HexMap.ToLocal(new Vector2I(0, 0))).X + 100;
-    private float RightBound => _rightBound ??= ToGlobal(HexMap.ToLocal(new Vector2I(HexMap.Width, 0))).X - 100;
-    private float TopBound => _topBound ??= ToGlobal(HexMap.ToLocal(new Vector2I(0, 0))).Y + 50;
-    private float BottomBound => _bottomBound ??= ToGlobal(HexMap.ToLocal(new Vector2I(0, HexMap.Height))).Y - 50;
+    private float LeftBound => _leftBound
+        ??= ToGlobal(HexMap.ToLocal(new Vector2I(0, 0))).X + HorizontalPadding;
+
+    private float RightBound => _rightBound
+        ??= ToGlobal(HexMap.ToLocal(new Vector2I(HexMap.Width, 0))).X - HorizontalPadding;
+
+    private float TopBound => _topBound
+        ??= ToGlobal(HexMap.ToLocal(new Vector2I(0, 0))).Y + VerticalPadding;
+
+    private float BottomBound => _bottomBound
+        ??= ToGlobal(HexMap.ToLocal(new Vector2I(0, HexMap.Height))).Y - VerticalPadding;
 
     public override void _PhysicsProcess(double delta)
     {
