@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using static de.nodapo.turnbasedstrategygame.Map.Terrain;
 using static Godot.FastNoiseLite.FractalTypeEnum;
@@ -63,7 +64,7 @@ public partial class HexMap : Node2D
             }
         }
 
-        var terrainRanges = new List<(float Min, float Max, Terrain terrain)>()
+        var terrainRanges = new List<(float Min, float Max, Terrain terrain)>
         {
             (0, noiseMax / 10 * 2.5f, Water),
             (noiseMax / 10 * 2.5f, noiseMax / 10 * 4.0f, Coast),
@@ -75,8 +76,20 @@ public partial class HexMap : Node2D
         {
             for (var y = 0; y < Height; y++)
             {
-                BaseLayer.SetCell(new Vector2I(x, y), 0, new Vector2I(0, 0));
-                BorderLayer.SetCell(new Vector2I(x, y), 0, new Vector2I(0, 0));
+                var coordinates = new Vector2I(x, y);
+
+                var hex = new Hex
+                {
+                    Coordinates = coordinates,
+                    Terrain = terrainRanges
+                        .First(range => baseMap[x, y] >= range.Min && baseMap[x, y] < range.Max)
+                        .terrain
+                };
+
+                _hexes[coordinates] = hex;
+
+                BaseLayer.SetCell(coordinates, 0, hex.Terrain.ToTileMapLayerCoordinates());
+                BorderLayer.SetCell(coordinates, 0, new Vector2I(0, 0));
             }
         }
     }
