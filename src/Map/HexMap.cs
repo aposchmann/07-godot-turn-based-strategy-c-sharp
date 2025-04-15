@@ -16,8 +16,9 @@ public partial class HexMap : Node2D
     private TileMapLayer? _baseLayer;
     private TileMapLayer? _borderLayer;
     private TileMapLayer? _overlayLayer;
-    [Export] public int Height = 42;
-    [Export] public int Width = 42;
+
+    [Export] public int Height = 60;
+    [Export] public int Width = 100;
 
     private TileMapLayer BaseLayer =>
         _baseLayer ??= GetNode<TileMapLayer>("BaseLayer") ?? throw new NullReferenceException();
@@ -81,6 +82,25 @@ public partial class HexMap : Node2D
             BaseLayer.SetCell(coordinates, 0, hex.Terrain.ToTileMapLayerCoordinates());
             BorderLayer.SetCell(coordinates, 0, new Vector2I(0, 0));
         }
+
+        const int maxIce = 4;
+
+        for (var x = 0; x < Width; x++)
+        {
+            for (var y = 0; y <= random.Next(maxIce); y++) CreateIce(x, y);
+
+            for (var y = Height - 1; y >= Height - 1 - random.Next(maxIce); y--) CreateIce(x, y);
+        }
+    }
+
+    private void CreateIce(int x, int y)
+    {
+        var coordinates = new Vector2I(x, y);
+        var hex = _hexes[coordinates];
+
+        hex.Terrain = Ice;
+
+        BaseLayer.SetCell(coordinates, 0, hex.Terrain.ToTileMapLayerCoordinates());
     }
 
     private static Terrain? GetTerrainFromNoise(
@@ -155,7 +175,7 @@ public partial class HexMap : Node2D
 
         return (noiseValues, new List<(float Min, float Max, Terrain terrain)>
         {
-            (noiseMax / 10 * 5.5f, noiseMax, Mountain)
+            (noiseMax / 10 * 6.5f, noiseMax, Mountain)
         });
     }
 
