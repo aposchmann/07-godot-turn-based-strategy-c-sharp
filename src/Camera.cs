@@ -9,13 +9,19 @@ namespace de.nodapo.turnbasedstrategygame;
 
 public partial class Camera : Camera2D
 {
-    [Export] public int Velocity = 20;
-    [Export] public float ZoomSpeed = 0.05f;
-
     private const float ZoomMin = 0.1f;
     private const float ZoomMax = 3.0f;
     private const float HorizontalPadding = 100;
     private const float VerticalPadding = 50;
+    private float? _bottomBound;
+
+    private HexMap? _hexMap;
+
+    private float? _leftBound;
+    private float? _rightBound;
+    private float? _topBound;
+    [Export] public int Velocity = 20;
+    [Export] public float ZoomSpeed = 0.05f;
 
     private Dictionary<string, (int X, int Y)> KeyboardMovements => new()
     {
@@ -37,15 +43,8 @@ public partial class Camera : Camera2D
         { "mouse_zoom_out", -ZoomSpeed }
     };
 
-    private HexMap? _hexMap;
-
     private HexMap HexMap =>
         _hexMap ??= GetNode<HexMap>("../HexMap") ?? throw new NullReferenceException();
-
-    private float? _leftBound;
-    private float? _rightBound;
-    private float? _topBound;
-    private float? _bottomBound;
 
     private float LeftBound => _leftBound
         ??= ToGlobal(HexMap.ToLocal(new Vector2I(0, 0))).X + HorizontalPadding;
