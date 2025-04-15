@@ -4,6 +4,7 @@ using System.Linq;
 using Godot;
 using static de.nodapo.turnbasedstrategygame.Map.Terrain;
 using static Godot.FastNoiseLite.FractalTypeEnum;
+using static Godot.FastNoiseLite.NoiseTypeEnum;
 
 namespace de.nodapo.turnbasedstrategygame.Map;
 
@@ -39,7 +40,10 @@ public partial class HexMap : Node2D
         var random = new Random();
         var seed = random.Next(int.MaxValue);
 
-        var baseTerrain = GenerateBaseTerrain(seed);
+        var baseNoise = GenerateBaseNoise(seed);
+        var forestNoise = GenerateForestNoise(seed);
+        var desertNoise = GenerateDesertNoise(seed);
+        var mountainNoise = GenerateMountainNoise(seed);
 
         for (var x = 0; x < Width; x++)
         {
@@ -47,14 +51,33 @@ public partial class HexMap : Node2D
             {
                 var coordinates = new Vector2I(x, y);
 
+                var terrain = GetTerrainFromNoise(baseNoise.Ranges, baseNoise.Values[x, y]) ?? Plains;
+
+                if (terrain == Plains && GetTerrainFromNoise(
+                        desertNoise.Ranges,
+                        desertNoise.Values[x, y]) is { } desertTerrain)
+                {
+                    terrain = desertTerrain;
+                }
+
+                if (terrain == Plains && GetTerrainFromNoise(
+                        forestNoise.Ranges,
+                        forestNoise.Values[x, y]) is { } forestTerrain)
+                {
+                    terrain = forestTerrain;
+                }
+                
+                if (terrain == Plains && GetTerrainFromNoise(
+                        mountainNoise.Ranges,
+                        mountainNoise.Values[x, y]) is { } mountainTerrain)
+                {
+                    terrain = mountainTerrain;
+                }
+                
                 var hex = new Hex
                 {
                     Coordinates = coordinates,
-                    Terrain = baseTerrain.NoiseRanges
-                        .First(range =>
-                            baseTerrain.NoiseValues[x, y] >= range.Min &&
-                            baseTerrain.NoiseValues[x, y] < range.Max)
-                        .terrain
+                    Terrain = terrain
                 };
 
                 _hexes[coordinates] = hex;
@@ -65,8 +88,17 @@ public partial class HexMap : Node2D
         }
     }
 
-    private (float[,] NoiseValues, List<(float Min, float Max, Terrain terrain)> NoiseRanges)
-        GenerateBaseTerrain(int seed)
+    private static Terrain? GetTerrainFromNoise(
+        List<(float Min, float Max, Terrain Terrain)> noiseRanges,
+        float noiseValue)
+    {
+        return noiseRanges
+            .FirstOrDefault(range => noiseValue >= range.Min && noiseValue < range.Max)
+            .Terrain;
+    }
+
+    private (float[,] Values, List<(float Min, float Max, Terrain Terrain)> Ranges)
+        GenerateBaseNoise(int seed)
     {
         var noise = new FastNoiseLite();
 
@@ -94,7 +126,103 @@ public partial class HexMap : Node2D
             (0, noiseMax / 10 * 2.5f, Water),
             (noiseMax / 10 * 2.5f, noiseMax / 10 * 4.0f, Coast),
             (noiseMax / 10 * 4.0f, noiseMax / 10 * 4.5f, Beach),
-            (noiseMax / 10 * 4.5f, noiseMax + 0.05f, Plains)
+            (noiseMax / 10 * 4.5f, noiseMax, Plains)
+        };
+
+        return (noiseValues, ranges);
+    }
+
+    private (float[,] Values, List<(float Min, float Max, Terrain Terrain)> Ranges)
+        GenerateForestNoise(int seed)
+    {
+        var noise = new FastNoiseLite();
+
+        noise.Seed = seed;
+        noise.Frequency = 0.04f;
+        noise.FractalType = Fbm;
+        noise.FractalLacunarity = 2f;
+        noise.NoiseType = Cellular;
+
+        var noiseValues = new float[Width, Height];
+        var noiseMax = 0f;
+
+        for (var x = 0; x < Width; x++)
+        {
+            for (var y = 0; y < Height; y++)
+            {
+                noiseValues[x, y] = Math.Abs(noise.GetNoise2D(x, y));
+
+                if (noiseValues[x, y] > noiseMax) noiseMax = noiseValues[x, y];
+            }
+        }
+
+        var ranges = new List<(float Min, float Max, Terrain terrain)>
+        {
+            (noiseMax / 10 * 7.5f, noiseMax, Forest)
+        };
+
+        return (noiseValues, ranges);
+    }
+
+    private (float[,] Values, List<(float Min, float Max, Terrain Terrain)> Ranges)
+        GenerateDesertNoise(int seed)
+    {
+        var noise = new FastNoiseLite();
+
+        noise.Seed = seed;
+        noise.Frequency = 0.015f;
+        noise.FractalType = Fbm;
+        noise.FractalLacunarity = 2f;
+        noise.NoiseType = SimplexSmooth;
+
+        var noiseValues = new float[Width, Height];
+        var noiseMax = 0f;
+
+        for (var x = 0; x < Width; x++)
+        {
+            for (var y = 0; y < Height; y++)
+            {
+                noiseValues[x, y] = Math.Abs(noise.GetNoise2D(x, y));
+
+                if (noiseValues[x, y] > noiseMax) noiseMax = noiseValues[x, y];
+            }
+        }
+
+        var ranges = new List<(float Min, float Max, Terrain terrain)>
+        {
+            (noiseMax / 10 * 7.5f, noiseMax, Desert)
+        };
+
+        return (noiseValues, ranges);
+    }
+    
+    private (float[,] Values, List<(float Min, float Max, Terrain Terrain)> Ranges)
+        GenerateMountainNoise(int seed)
+    {
+        var noise = new FastNoiseLite();
+
+        noise.Seed = seed;
+        noise.Frequency = 0.02f;
+        noise.FractalType = Ridged;
+        noise.FractalLacunarity = 2f;
+        noise.NoiseType = Simplex;
+
+        var noiseValues = new float[Width, Height];
+        var noiseMax = 0f;
+
+        for (var x = 0; x < Width; x++)
+        {
+            for (var y = 0; y < Height; y++)
+            {
+                noiseValues[x, y] = Math.Abs(noise.GetNoise2D(x, y));
+
+                if (noiseValues[x, y] > noiseMax) noiseMax = noiseValues[x, y];
+            }
+        }
+
+        var ranges = new List<(float Min, float Max, Terrain terrain)>
+        {
+            (noiseMax / 10 * 5.5f, noiseMax, Mountain)
         };
 
         return (noiseValues, ranges);
