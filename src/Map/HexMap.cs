@@ -198,6 +198,6 @@ public partial class HexMap : Node2D
             mapCoordinates.Y < 0 ||
             mapCoordinates.Y >= Height) return;
         
-        GD.Print(_hexes[mapCoordinates]);
+        OverlayLayer.SetCell(mapCoordinates, 0, new Vector2I(0, 1));
     }
 }

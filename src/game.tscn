@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bgkdke2xgg40w"]
+[gd_scene load_steps=11 format=3 uid="uid://bgkdke2xgg40w"]
 
 [ext_resource type="Script" uid="uid://bewoc2m7rxspv" path="res://src/Camera.cs" id="1_kc8ui"]
 [ext_resource type="Script" uid="uid://8x5ghyweoj8g" path="res://src/Map/HexMap.cs" id="2_kc8ui"]
@@ -33,9 +33,16 @@ tile_shape = 3
 tile_size = Vector2i(128, 128)
 sources/0 = SubResource("TileSetAtlasSource_pk08u")
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bs6l1"]
+texture = ExtResource("4_bs6l1")
+texture_region_size = Vector2i(128, 128)
+0:0/0 = 0
+0:1/0 = 0
+
 [sub_resource type="TileSet" id="TileSet_3msxb"]
 tile_shape = 3
 tile_size = Vector2i(128, 128)
+sources/0 = SubResource("TileSetAtlasSource_bs6l1")
 
 [node name="Game" type="Node"]
 
