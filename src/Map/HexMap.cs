@@ -91,17 +91,17 @@ public partial class HexMap : Node2D
 
     private void GenerateIceCaps(Random random)
     {
-        const int maxIce = 4;
+        const int maxIce = 3;
 
         Parallel.For(0, Width, x =>
         {
             var northIce = random.Next(maxIce + 1);
             var southIce = random.Next(maxIce + 1);
 
-            for (var y = 0; y < northIce; y++)
+            for (var y = 0; y <= northIce; y++)
                 CreateIce(x, y);
 
-            for (var y = Height - 1; y >= Height - southIce; y--)
+            for (var y = Height - 1; y >= Height - southIce - 1; y--)
                 CreateIce(x, y);
         });
     }

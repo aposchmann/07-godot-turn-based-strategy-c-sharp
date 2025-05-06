@@ -1,19 +1,34 @@
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Godot;
+using static System.ArgumentOutOfRangeException;
 using static Godot.FastNoiseLite;
 using static Godot.FastNoiseLite.FractalTypeEnum;
 using static Godot.FastNoiseLite.NoiseTypeEnum;
 
 namespace de.nodapo.turnbasedstrategygame.Terrain;
 
-public class TerrainNoiseBuilder(int width, int height)
+public class TerrainNoiseBuilder
 {
+    private readonly int _height;
+    private readonly int _width;
+
     private float _fractalLacunarity = 2f;
     private int _fractalOctaves = 5;
     private FractalTypeEnum _fractalType = Fbm;
-    private float _frequency;
+    private float _frequency = 0.01f;
     private NoiseTypeEnum _noiseType = SimplexSmooth;
     private int _seed;
+
+    public TerrainNoiseBuilder(int width, int height)
+    {
+        ThrowIfNegative(width);
+        ThrowIfNegative(height);
+
+        _width = width;
+        _height = height;
+    }
 
     public TerrainNoiseBuilder WithSeed(int seed)
     {
@@ -63,15 +78,14 @@ public class TerrainNoiseBuilder(int width, int height)
             FractalOctaves = _fractalOctaves
         };
 
-        var noiseValues = new float[width, height];
-        var noiseMax = 0f;
+        var noiseValues = new float[_width, _height];
 
-        for (var x = 0; x < width; x++)
-        for (var y = 0; y < height; y++)
+        Parallel.For(0, _width, x =>
         {
-            noiseValues[x, y] = Math.Abs(noise.GetNoise2D(x, y));
-            noiseMax = Math.Max(noiseValues[x, y], noiseMax);
-        }
+            for (var y = 0; y < _height; y++) noiseValues[x, y] = Math.Abs(noise.GetNoise2D(x, y));
+        });
+
+        var noiseMax = noiseValues.Cast<float>().Max();
 
         return (noiseValues, noiseMax);
     }
