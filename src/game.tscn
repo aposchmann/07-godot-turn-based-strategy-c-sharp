@@ -58,6 +58,7 @@ script = ExtResource("2_kc8ui")
 tile_set = SubResource("TileSet_mu1t8")
 
 [node name="BorderLayer" type="TileMapLayer" parent="HexMap"]
+modulate = Color(1, 1, 1, 0.156863)
 tile_set = SubResource("TileSet_7uq6d")
 
 [node name="OverlayLayer" type="TileMapLayer" parent="HexMap"]

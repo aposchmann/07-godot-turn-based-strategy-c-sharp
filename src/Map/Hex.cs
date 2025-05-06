@@ -10,5 +10,8 @@ public class Hex
 
     public Terrain Terrain { get; set; }
 
-    public override string ToString() => $"{Coordinates} ({Terrain})";
+    public override string ToString()
+    {
+        return $"{Coordinates} ({Terrain})";
+    }
 }
