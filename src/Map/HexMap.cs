@@ -7,6 +7,7 @@ using Godot;
 using static de.nodapo.turnbasedstrategygame.Terrain.Terrain;
 using static Godot.FastNoiseLite.FractalTypeEnum;
 using static Godot.FastNoiseLite.NoiseTypeEnum;
+using static Godot.MouseButtonMask;
 
 namespace de.nodapo.turnbasedstrategygame.Map;
 
@@ -184,5 +185,19 @@ public partial class HexMap : Node2D
             .Build();
 
         return (noiseValues, [(noiseMax / 10 * 6.5f, noiseMax, Mountain)]);
+    }
+
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (@event is not InputEventMouseButton { ButtonMask: Left }) return;
+
+        var mapCoordinates = OverlayLayer.LocalToMap(ToLocal(GetGlobalMousePosition()));
+
+        if (mapCoordinates.X < 0 ||
+            mapCoordinates.X >= Width ||
+            mapCoordinates.Y < 0 ||
+            mapCoordinates.Y >= Height) return;
+        
+        GD.Print(_hexes[mapCoordinates]);
     }
 }

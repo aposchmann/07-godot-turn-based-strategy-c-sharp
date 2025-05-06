@@ -9,4 +9,6 @@ public class Hex
     public Vector2I Coordinates { get; init; }
 
     public Terrain Terrain { get; set; }
+
+    public override string ToString() => $"{Coordinates} ({Terrain})";
 }
