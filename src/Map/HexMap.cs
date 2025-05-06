@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using de.nodapo.turnbasedstrategygame.Terrain;
 using Godot;
-using static de.nodapo.turnbasedstrategygame.Map.Terrain;
-using static Godot.FastNoiseLite;
+using static de.nodapo.turnbasedstrategygame.Terrain.Terrain;
 using static Godot.FastNoiseLite.FractalTypeEnum;
 using static Godot.FastNoiseLite.NoiseTypeEnum;
 
 namespace de.nodapo.turnbasedstrategygame.Map;
+
+using Terrain = Terrain.Terrain;
 
 public partial class HexMap : Node2D
 {
@@ -83,14 +86,24 @@ public partial class HexMap : Node2D
             BorderLayer.SetCell(coordinates, 0, new Vector2I(0, 0));
         }
 
-        const int maxIce = 4;
+        GenerateIceCaps(random);
+    }
 
-        for (var x = 0; x < Width; x++)
+    private void GenerateIceCaps(Random random)
+    {
+        const int maxIce = 3;
+
+        Parallel.For(0, Width, x =>
         {
-            for (var y = 0; y <= random.Next(maxIce); y++) CreateIce(x, y);
+            var northIce = random.Next(maxIce + 1);
+            var southIce = random.Next(maxIce + 1);
 
-            for (var y = Height - 1; y >= Height - 1 - random.Next(maxIce); y--) CreateIce(x, y);
-        }
+            for (var y = 0; y <= northIce; y++)
+                CreateIce(x, y);
+
+            for (var y = Height - 1; y >= Height - southIce - 1; y--)
+                CreateIce(x, y);
+        });
     }
 
     private void CreateIce(int x, int y)
@@ -115,98 +128,61 @@ public partial class HexMap : Node2D
     private (float[,] Values, List<(float Min, float Max, Terrain Terrain)> Ranges)
         GenerateBaseNoise(int seed)
     {
-        var (noiseValues, noiseMax) = GenerateNoise(
-            seed,
-            0.008f,
-            fractalType: Fbm,
-            fractalLacunarity: 2.25f,
-            fractalOctaves: 4);
+        var (noiseValues, noiseMax) = new TerrainNoiseBuilder(Width, Height)
+            .WithSeed(seed)
+            .WithFrequency(0.008f)
+            .WithFractalType(Fbm)
+            .WithFractalLacunarity(2.25f)
+            .WithFractalOctaves(4)
+            .Build();
 
-        return (noiseValues, new List<(float Min, float Max, Terrain terrain)>
-        {
+        return (noiseValues, [
             (0, noiseMax / 10 * 2.5f, Water),
             (noiseMax / 10 * 2.5f, noiseMax / 10 * 4.0f, Coast),
             (noiseMax / 10 * 4.0f, noiseMax / 10 * 4.5f, Beach),
             (noiseMax / 10 * 4.5f, noiseMax, Plains)
-        });
+        ]);
     }
 
     private (float[,] Values, List<(float Min, float Max, Terrain Terrain)> Ranges)
         GenerateForestNoise(int seed)
     {
-        var (noiseValues, noiseMax) = GenerateNoise(
-            seed,
-            type: Cellular,
-            frequency: 0.04f,
-            fractalType: Fbm,
-            fractalLacunarity: 2f);
+        var (noiseValues, noiseMax) = new TerrainNoiseBuilder(Width, Height)
+            .WithSeed(seed)
+            .WithNoiseType(Cellular)
+            .WithFrequency(0.04f)
+            .WithFractalType(Fbm)
+            .WithFractalLacunarity(2f)
+            .Build();
 
-        return (noiseValues, new List<(float Min, float Max, Terrain terrain)>
-        {
-            (noiseMax / 10 * 7.5f, noiseMax, Forest)
-        });
+        return (noiseValues, [(noiseMax / 10 * 7.5f, noiseMax, Forest)]);
     }
 
     private (float[,] Values, List<(float Min, float Max, Terrain Terrain)> Ranges)
         GenerateDesertNoise(int seed)
     {
-        var (noiseValues, noiseMax) = GenerateNoise(
-            seed,
-            type: SimplexSmooth,
-            frequency: 0.015f,
-            fractalType: Fbm,
-            fractalLacunarity: 2f);
+        var (noiseValues, noiseMax) = new TerrainNoiseBuilder(Width, Height)
+            .WithSeed(seed)
+            .WithNoiseType(SimplexSmooth)
+            .WithFrequency(0.015f)
+            .WithFractalType(Fbm)
+            .WithFractalLacunarity(2f)
+            .Build();
 
-        return (noiseValues, new List<(float Min, float Max, Terrain terrain)>
-        {
-            (noiseMax / 10 * 7.5f, noiseMax, Desert)
-        });
+        return (noiseValues, [(noiseMax / 10 * 7.5f, noiseMax, Desert)]);
     }
 
     private (float[,] Values, List<(float Min, float Max, Terrain Terrain)> Ranges)
         GenerateMountainNoise(int seed)
     {
-        var (noiseValues, noiseMax) = GenerateNoise(
-            seed,
-            type: Simplex,
-            frequency: 0.02f,
-            fractalType: Ridged,
-            fractalLacunarity: 2f);
+        var (noiseValues, noiseMax) = new TerrainNoiseBuilder(Width, Height)
+            .WithSeed(seed)
+            .WithNoiseType(Simplex)
+            .WithFrequency(0.02f)
+            .WithFractalType(Ridged)
+            .WithFractalLacunarity(2f)
+            .Build();
 
-        return (noiseValues, new List<(float Min, float Max, Terrain terrain)>
-        {
-            (noiseMax / 10 * 6.5f, noiseMax, Mountain)
-        });
-    }
-
-    private (float[,] Values, float NoiseMax) GenerateNoise(
-        int seed,
-        float frequency,
-        float fractalLacunarity,
-        FractalTypeEnum fractalType,
-        NoiseTypeEnum type = SimplexSmooth,
-        int fractalOctaves = 5)
-    {
-        var noise = new FastNoiseLite();
-
-        noise.Seed = seed;
-        noise.NoiseType = type;
-        noise.Frequency = frequency;
-        noise.FractalType = fractalType;
-        noise.FractalLacunarity = fractalLacunarity;
-        noise.FractalOctaves = fractalOctaves;
-
-        var noiseValues = new float[Width, Height];
-        var noiseMax = 0f;
-
-        for (var x = 0; x < Width; x++)
-        for (var y = 0; y < Height; y++)
-        {
-            noiseValues[x, y] = Math.Abs(noise.GetNoise2D(x, y));
-
-            noiseMax = Math.Max(noiseValues[x, y], noiseMax);
-        }
-
-        return (noiseValues, noiseMax);
+        return (noiseValues, [(noiseMax / 10 * 6.5f, noiseMax, Mountain)]);
     }
 }

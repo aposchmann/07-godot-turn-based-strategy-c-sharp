@@ -2,6 +2,8 @@ using Godot;
 
 namespace de.nodapo.turnbasedstrategygame.Map;
 
+using Terrain = Terrain.Terrain;
+
 public class Hex
 {
     public Vector2I Coordinates { get; init; }

@@ -1,4 +1,4 @@
-namespace de.nodapo.turnbasedstrategygame.Map;
+namespace de.nodapo.turnbasedstrategygame.Terrain;
 
 public enum Terrain
 {
