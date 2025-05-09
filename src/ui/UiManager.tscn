@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dnnyh8hw168pi"]
+
+[ext_resource type="Script" uid="uid://blxskldugk3oq" path="res://src/ui/UiManager.cs" id="1_3ii56"]
+
+[node name="UiManager" type="Node2D"]
+script = ExtResource("1_3ii56")

@@ -26,14 +26,14 @@ public partial class HexMap : Node2D
     [Export] public int Height = 60;
     [Export] public int Width = 100;
 
-    private TileMapLayer BaseLayer =>
-        _baseLayer ??= GetNode<TileMapLayer>("BaseLayer") ?? throw new NullReferenceException();
+    private TileMapLayer BaseLayer => _baseLayer ??=
+        GetNode<TileMapLayer>("BaseLayer") ?? throw new NullReferenceException();
 
-    private TileMapLayer BorderLayer =>
-        _borderLayer ??= GetNode<TileMapLayer>("BorderLayer") ?? throw new NullReferenceException();
+    private TileMapLayer BorderLayer => _borderLayer ??=
+        GetNode<TileMapLayer>("BorderLayer") ?? throw new NullReferenceException();
 
-    private TileMapLayer OverlayLayer =>
-        _overlayLayer ??= GetNode<TileMapLayer>("OverlayLayer") ?? throw new NullReferenceException();
+    private TileMapLayer OverlayLayer => _overlayLayer ??=
+        GetNode<TileMapLayer>("OverlayLayer") ?? throw new NullReferenceException();
 
     public override void _Ready()
     {
@@ -46,7 +46,6 @@ public partial class HexMap : Node2D
         var random = new Random();
 
         foreach (var hex in _hexes.Values)
-        {
             switch (hex.Terrain)
             {
                 case Plains:
@@ -74,7 +73,6 @@ public partial class HexMap : Node2D
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
     }
 
     public Vector2 ToLocal(Vector2I coordinates)
