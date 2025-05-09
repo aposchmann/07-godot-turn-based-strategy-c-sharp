@@ -38,6 +38,43 @@ public partial class HexMap : Node2D
     public override void _Ready()
     {
         GenerateTerrain();
+        GenerateResources();
+    }
+
+    private void GenerateResources()
+    {
+        var random = new Random();
+
+        foreach (var hex in _hexes.Values)
+        {
+            switch (hex.Terrain)
+            {
+                case Plains:
+                    hex.Food = random.Next(2, 6);
+                    hex.Production = random.Next(0, 3);
+                    break;
+                case Desert:
+                    hex.Food = random.Next(0, 2);
+                    hex.Production = random.Next(0, 2);
+                    break;
+                case Beach:
+                    hex.Food = random.Next(0, 4);
+                    hex.Production = random.Next(0, 2);
+                    break;
+                case Forest:
+                    hex.Food = random.Next(1, 4);
+                    hex.Production = random.Next(2, 6);
+                    break;
+                case Water:
+                case Mountain:
+                case Coast:
+                case Ice:
+                    // NOOP
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
     }
 
     public Vector2 ToLocal(Vector2I coordinates)
@@ -193,29 +230,31 @@ public partial class HexMap : Node2D
     {
         if (@event is not InputEventMouseButton { ButtonMask: Left }) return;
 
-        var clickedHex = OverlayLayer.LocalToMap(ToLocal(GetGlobalMousePosition()));
+        var clickedPosition = OverlayLayer.LocalToMap(ToLocal(GetGlobalMousePosition()));
 
-        if (clickedHex == _selectedHex) return;
+        if (clickedPosition == _selectedHex) return;
 
         DeselectHex();
 
-        if (!_hexes.ContainsKey(clickedHex)) return;
+        if (!_hexes.TryGetValue(clickedPosition, out var clickedHex)) return;
 
-        SelectHex(clickedHex);
+        SelectHex(clickedPosition);
+
+        GD.Print(clickedHex);
     }
 
-    private void SelectHex(Vector2I clickedCoordinates)
+    private void SelectHex(Vector2I hexPosition)
     {
-        OverlayLayer.SetCell(clickedCoordinates, 0, new Vector2I(0, 1));
+        OverlayLayer.SetCell(hexPosition, 0, new Vector2I(0, 1));
 
-        _selectedHex = clickedCoordinates;
+        _selectedHex = hexPosition;
     }
 
     private void DeselectHex()
     {
-        if (_selectedHex is not { } selectedCoordinates) return;
+        if (_selectedHex is not { } selectedHex) return;
 
-        OverlayLayer.SetCell(selectedCoordinates);
+        OverlayLayer.SetCell(selectedHex);
 
         _selectedHex = null;
     }
