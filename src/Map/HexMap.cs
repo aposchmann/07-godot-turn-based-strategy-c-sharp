@@ -21,7 +21,7 @@ public partial class HexMap : Node2D
     private TileMapLayer? _borderLayer;
     private TileMapLayer? _overlayLayer;
 
-    private Vector2I? _selectedCoordinates;
+    private Vector2I? _selectedHex;
 
     [Export] public int Height = 60;
     [Export] public int Width = 100;
@@ -193,20 +193,30 @@ public partial class HexMap : Node2D
     {
         if (@event is not InputEventMouseButton { ButtonMask: Left }) return;
 
-        var clickedCoordinates = OverlayLayer.LocalToMap(ToLocal(GetGlobalMousePosition()));
+        var clickedHex = OverlayLayer.LocalToMap(ToLocal(GetGlobalMousePosition()));
 
-        if (clickedCoordinates == _selectedCoordinates) return;
+        if (clickedHex == _selectedHex) return;
 
-        if (_selectedCoordinates is { } selectedCoordinates)
-        {
-            OverlayLayer.SetCell(selectedCoordinates);
-            _selectedCoordinates = null;
-        }
+        DeselectHex();
 
-        if (!_hexes.ContainsKey(clickedCoordinates)) return;
+        if (!_hexes.ContainsKey(clickedHex)) return;
 
+        SelectHex(clickedHex);
+    }
+
+    private void SelectHex(Vector2I clickedCoordinates)
+    {
         OverlayLayer.SetCell(clickedCoordinates, 0, new Vector2I(0, 1));
 
-        _selectedCoordinates = clickedCoordinates;
+        _selectedHex = clickedCoordinates;
+    }
+
+    private void DeselectHex()
+    {
+        if (_selectedHex is not { } selectedCoordinates) return;
+
+        OverlayLayer.SetCell(selectedCoordinates);
+
+        _selectedHex = null;
     }
 }
