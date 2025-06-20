@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using de.nodapo.turnbasedstrategygame.Terrain;
-using de.nodapo.turnbasedstrategygame.ui;
 using Godot;
 using static de.nodapo.turnbasedstrategygame.Terrain.Terrain;
 using static Godot.FastNoiseLite.FractalTypeEnum;
@@ -16,13 +15,6 @@ using Terrain = Terrain.Terrain;
 
 public partial class HexMap : Node2D
 {
-    [Export] public int Height = 60;
-    [Export] public int Width = 100;
-
-    public delegate void SendHexDataEventHandler(Hex hex);
-
-    public event SendHexDataEventHandler? SendHexData;
-
     private readonly Dictionary<Vector2I, Hex> _hexes = new();
 
     private TileMapLayer? _baseLayer;
@@ -30,8 +22,8 @@ public partial class HexMap : Node2D
     private TileMapLayer? _overlayLayer;
 
     private Vector2I? _selectedHex;
-
-    private UiManager? _uiManager;
+    [Export] public int Height = 60;
+    [Export] public int Width = 100;
 
     private TileMapLayer BaseLayer => _baseLayer ??=
         GetNode<TileMapLayer>("BaseLayer") ?? throw new NullReferenceException();
@@ -42,15 +34,12 @@ public partial class HexMap : Node2D
     private TileMapLayer OverlayLayer => _overlayLayer ??=
         GetNode<TileMapLayer>("OverlayLayer") ?? throw new NullReferenceException();
 
-    private UiManager UiManager => _uiManager ??=
-        GetNode<UiManager>("/root/Game/CanvasLayer/UiManager") ?? throw new NullReferenceException();
+    public event EventHandler<Hex>? SelectedHexChanged;
 
     public override void _Ready()
     {
         GenerateTerrain();
         GenerateResources();
-
-        SendHexData += UiManager.SetTerrainPanel;
     }
 
     private void GenerateResources()
@@ -251,8 +240,8 @@ public partial class HexMap : Node2D
         SelectHex(clickedPosition);
 
         GD.Print(clickedHex);
-        
-        SendHexData?.Invoke(clickedHex);
+
+        SelectedHexChanged?.Invoke(this, clickedHex);
     }
 
     private void SelectHex(Vector2I hexPosition)

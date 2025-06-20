@@ -13,9 +13,6 @@ public partial class TerrainPanel : Panel
 
     private Label? _terrainLabel;
 
-    // TODO: Obsolete?
-    private Hex? Hex;
-
     private TextureRect TerrainImage => _terrainImage ??=
         GetNode<TextureRect>("TerrainImage") ?? throw new NullReferenceException();
 
@@ -30,10 +27,8 @@ public partial class TerrainPanel : Panel
 
     public void SetHex(Hex hex)
     {
-        Hex = hex;
-
         TerrainLabel.Text = $"Terrain: {hex.Terrain}";
         FoodLabel.Text = $"Food: {hex.Food}";
-        ProductionLabel.Text = $"ProductionLabel: {hex.Production}";
+        ProductionLabel.Text = $"Production: {hex.Production}";
     }
 }
