@@ -1,12 +1,13 @@
-[gd_scene load_steps=11 format=3 uid="uid://bgkdke2xgg40w"]
+[gd_scene load_steps=12 format=3 uid="uid://bgkdke2xgg40w"]
 
-[ext_resource type="Script" uid="uid://bewoc2m7rxspv" path="res://src/Camera.cs" id="1_kc8ui"]
-[ext_resource type="Script" uid="uid://8x5ghyweoj8g" path="res://src/Map/HexMap.cs" id="2_kc8ui"]
-[ext_resource type="Texture2D" uid="uid://sa5w3ko02vl3" path="res://textures/terrain.png" id="2_xq6wo"]
-[ext_resource type="Texture2D" uid="uid://dbtm4g31e3hky" path="res://textures/overlay.png" id="4_bs6l1"]
+[ext_resource type="Script" uid="uid://bewoc2m7rxspv" path="res://src/Camera.cs" id="1_7omc5"]
+[ext_resource type="Script" uid="uid://8x5ghyweoj8g" path="res://src/map/HexMap.cs" id="2_km1yn"]
+[ext_resource type="Texture2D" uid="uid://sa5w3ko02vl3" path="res://textures/terrain.png" id="3_eu8jo"]
+[ext_resource type="Texture2D" uid="uid://dbtm4g31e3hky" path="res://textures/overlay.png" id="4_dbp7n"]
+[ext_resource type="PackedScene" uid="uid://dnnyh8hw168pi" path="res://src/ui/UiManager.tscn" id="5_km1yn"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kc8ui"]
-texture = ExtResource("2_xq6wo")
+texture = ExtResource("3_eu8jo")
 texture_region_size = Vector2i(128, 128)
 0:0/0 = 0
 1:0/0 = 0
@@ -23,7 +24,7 @@ tile_size = Vector2i(128, 128)
 sources/0 = SubResource("TileSetAtlasSource_kc8ui")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pk08u"]
-texture = ExtResource("4_bs6l1")
+texture = ExtResource("4_dbp7n")
 texture_region_size = Vector2i(128, 128)
 0:0/0 = 0
 0:1/0 = 0
@@ -34,7 +35,7 @@ tile_size = Vector2i(128, 128)
 sources/0 = SubResource("TileSetAtlasSource_pk08u")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bs6l1"]
-texture = ExtResource("4_bs6l1")
+texture = ExtResource("4_dbp7n")
 texture_region_size = Vector2i(128, 128)
 0:0/0 = 0
 0:1/0 = 0
@@ -49,10 +50,10 @@ sources/0 = SubResource("TileSetAtlasSource_bs6l1")
 [node name="Camera" type="Camera2D" parent="."]
 position_smoothing_enabled = true
 position_smoothing_speed = 10.0
-script = ExtResource("1_kc8ui")
+script = ExtResource("1_7omc5")
 
 [node name="HexMap" type="Node2D" parent="."]
-script = ExtResource("2_kc8ui")
+script = ExtResource("2_km1yn")
 
 [node name="BaseLayer" type="TileMapLayer" parent="HexMap"]
 tile_set = SubResource("TileSet_mu1t8")
@@ -63,3 +64,7 @@ tile_set = SubResource("TileSet_7uq6d")
 
 [node name="OverlayLayer" type="TileMapLayer" parent="HexMap"]
 tile_set = SubResource("TileSet_3msxb")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="UiManager" parent="CanvasLayer" instance=ExtResource("5_km1yn")]
