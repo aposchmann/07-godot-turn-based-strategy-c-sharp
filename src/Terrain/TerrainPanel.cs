@@ -9,6 +9,13 @@ namespace de.nodapo.turnbasedstrategygame.Terrain;
 
 public partial class TerrainPanel : Panel
 {
+    private Label? _foodLabel;
+    private Label? _productionLabel;
+
+    private TextureRect? _terrainImage;
+
+    private Label? _terrainLabel;
+
     private static Dictionary<Terrain, Texture2D> TerrainTextures { get; } = new()
     {
         { Plains, Load<Texture2D>("res://textures/terrain/plains.jpg") },
@@ -18,15 +25,8 @@ public partial class TerrainPanel : Panel
         { Ice, Load<Texture2D>("res://textures/terrain/ice.jpg") },
         { Water, Load<Texture2D>("res://textures/terrain/water.jpg") },
         { Coast, Load<Texture2D>("res://textures/terrain/coast.jpg") },
-        { Forest, Load<Texture2D>("res://textures/terrain/forest.jpg") },
+        { Forest, Load<Texture2D>("res://textures/terrain/forest.jpg") }
     };
-
-    private Label? _foodLabel;
-    private Label? _productionLabel;
-
-    private TextureRect? _terrainImage;
-
-    private Label? _terrainLabel;
 
     private TextureRect TerrainImage => _terrainImage ??=
         GetNode<TextureRect>("TerrainImage") ?? throw new NullReferenceException();

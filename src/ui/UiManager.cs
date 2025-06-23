@@ -18,12 +18,18 @@ public partial class UiManager : Node2D
         GetNode<HexMap>("/root/Game/HexMap").HexSelected += OnHexSelected;
     }
 
+    public void HideTerrainPanel()
+    {
+        _terrainPanel?.QueueFree();
+        _terrainPanel = null;
+    }
+
     private void OnHexSelected(object? _, HexSelectedEventArgs hexSelectedEventArgs)
     {
         if (_terrainPanel == null)
         {
             _terrainPanel = TerrainPanelScene.Instantiate<TerrainPanel>();
-            
+
             AddChild(_terrainPanel);
         }
 

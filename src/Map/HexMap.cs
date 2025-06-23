@@ -37,6 +37,9 @@ public partial class HexMap : Node2D
 
     public event EventHandler<HexSelectedEventArgs>? HexSelected;
 
+    [Signal]
+    public delegate void HexDeselectedEventHandler();
+
     public override void _Ready()
     {
         GenerateTerrain();
@@ -259,5 +262,7 @@ public partial class HexMap : Node2D
         OverlayLayer.SetCell(selectedHex);
 
         _selectedHex = null;
+
+        EmitSignal(SignalName.HexDeselected);
     }
 }
