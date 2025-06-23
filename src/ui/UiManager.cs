@@ -15,22 +15,18 @@ public partial class UiManager : Node2D
 
     public override void _Ready()
     {
-        GetNode<HexMap>("/root/Game/HexMap").SelectedHexChanged += SetTerrainPanel;
+        GetNode<HexMap>("/root/Game/HexMap").HexSelected += OnHexSelected;
     }
 
-    private void SetTerrainPanel(object? _, Hex hex)
+    private void OnHexSelected(object? _, HexSelectedEventArgs hexSelectedEventArgs)
     {
-        if (_terrainPanel != null)
+        if (_terrainPanel == null)
         {
-            RemoveChild(_terrainPanel);
-
-            _terrainPanel.QueueFree();
+            _terrainPanel = TerrainPanelScene.Instantiate<TerrainPanel>();
+            
+            AddChild(_terrainPanel);
         }
 
-        _terrainPanel = TerrainPanelScene.Instantiate<TerrainPanel>();
-
-        AddChild(_terrainPanel);
-
-        _terrainPanel.SetHex(hex);
+        _terrainPanel.SetHex(hexSelectedEventArgs.Hex);
     }
 }

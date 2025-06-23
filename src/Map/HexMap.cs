@@ -22,6 +22,7 @@ public partial class HexMap : Node2D
     private TileMapLayer? _overlayLayer;
 
     private Vector2I? _selectedHex;
+
     [Export] public int Height = 60;
     [Export] public int Width = 100;
 
@@ -34,7 +35,7 @@ public partial class HexMap : Node2D
     private TileMapLayer OverlayLayer => _overlayLayer ??=
         GetNode<TileMapLayer>("OverlayLayer") ?? throw new NullReferenceException();
 
-    public event EventHandler<Hex>? SelectedHexChanged;
+    public event EventHandler<HexSelectedEventArgs>? HexSelected;
 
     public override void _Ready()
     {
@@ -241,7 +242,7 @@ public partial class HexMap : Node2D
 
         GD.Print(clickedHex);
 
-        SelectedHexChanged?.Invoke(this, clickedHex);
+        HexSelected?.Invoke(this, new HexSelectedEventArgs { Hex = clickedHex });
     }
 
     private void SelectHex(Vector2I hexPosition)
