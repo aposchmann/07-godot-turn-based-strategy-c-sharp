@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://bgkdke2xgg40w"]
 
-[ext_resource type="Script" uid="uid://bewoc2m7rxspv" path="res://src/Camera.cs" id="1_7omc5"]
+[ext_resource type="Script" uid="uid://bewoc2m7rxspv" path="res://src/ui/Camera.cs" id="1_7omc5"]
 [ext_resource type="Script" uid="uid://8x5ghyweoj8g" path="res://src/map/HexMap.cs" id="2_km1yn"]
 [ext_resource type="Texture2D" uid="uid://sa5w3ko02vl3" path="res://textures/terrain.png" id="3_eu8jo"]
 [ext_resource type="Texture2D" uid="uid://dbtm4g31e3hky" path="res://textures/overlay.png" id="4_dbp7n"]
