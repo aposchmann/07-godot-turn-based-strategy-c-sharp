@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://2ylkc8yp870a"]
+
+[ext_resource type="Texture2D" uid="uid://ddqvk0sejmswj" path="res://textures/city.png" id="1_4412u"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_giqkp"]
+font_size = 24
+font_color = Color(0, 0, 0, 1)
+
+[node name="City" type="Node2D"]
+
+[node name="Image" type="Sprite2D" parent="."]
+position = Vector2(1, 4)
+texture = ExtResource("1_4412u")
+
+[node name="Name" type="Label" parent="."]
+offset_left = -60.0
+offset_top = 40.0
+offset_right = 60.0
+offset_bottom = 74.0
+text = "City Name"
+label_settings = SubResource("LabelSettings_giqkp")
