@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using de.nodapo.turnbasedstrategygame.Map;
 using Godot;
@@ -20,6 +19,7 @@ public partial class Camera : Camera2D
     private float? _leftBound;
     private float? _rightBound;
     private float? _topBound;
+
     [Export] public int Velocity = 20;
     [Export] public float ZoomSpeed = 0.05f;
 
@@ -43,8 +43,7 @@ public partial class Camera : Camera2D
         { "mouse_zoom_out", -ZoomSpeed }
     };
 
-    private HexMap HexMap =>
-        _hexMap ??= GetNode<HexMap>("../HexMap") ?? throw new NullReferenceException();
+    private HexMap HexMap => _hexMap ??= GetNode<HexMap>("../HexMap");
 
     private float LeftBound => _leftBound
         ??= ToGlobal(HexMap.ToLocal(new Vector2I(0, 0))).X + HorizontalPadding;

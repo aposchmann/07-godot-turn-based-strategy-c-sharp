@@ -15,6 +15,9 @@ using Terrain = Terrain.Terrain;
 
 public partial class HexMap : Node2D
 {
+    [Signal]
+    public delegate void HexDeselectedEventHandler();
+
     private readonly Dictionary<Vector2I, Hex> _hexes = new();
 
     private TileMapLayer? _baseLayer;
@@ -26,19 +29,11 @@ public partial class HexMap : Node2D
     [Export] public int Height = 60;
     [Export] public int Width = 100;
 
-    private TileMapLayer BaseLayer => _baseLayer ??=
-        GetNode<TileMapLayer>("BaseLayer") ?? throw new NullReferenceException();
-
-    private TileMapLayer BorderLayer => _borderLayer ??=
-        GetNode<TileMapLayer>("BorderLayer") ?? throw new NullReferenceException();
-
-    private TileMapLayer OverlayLayer => _overlayLayer ??=
-        GetNode<TileMapLayer>("OverlayLayer") ?? throw new NullReferenceException();
+    private TileMapLayer BaseLayer => _baseLayer ??= GetNode<TileMapLayer>("BaseLayer");
+    private TileMapLayer BorderLayer => _borderLayer ??= GetNode<TileMapLayer>("BorderLayer");
+    private TileMapLayer OverlayLayer => _overlayLayer ??= GetNode<TileMapLayer>("OverlayLayer");
 
     public event EventHandler<HexSelectedEventArgs>? HexSelected;
-
-    [Signal]
-    public delegate void HexDeselectedEventHandler();
 
     public override void _Ready()
     {

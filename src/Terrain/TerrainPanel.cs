@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using de.nodapo.turnbasedstrategygame.Map;
 using Godot;
@@ -11,9 +10,7 @@ public partial class TerrainPanel : Panel
 {
     private Label? _foodLabel;
     private Label? _productionLabel;
-
     private TextureRect? _terrainImage;
-
     private Label? _terrainLabel;
 
     private static Dictionary<Terrain, Texture2D> TerrainTextures { get; } = new()
@@ -28,17 +25,10 @@ public partial class TerrainPanel : Panel
         { Forest, Load<Texture2D>("res://textures/terrain/forest.jpg") }
     };
 
-    private TextureRect TerrainImage => _terrainImage ??=
-        GetNode<TextureRect>("TerrainImage") ?? throw new NullReferenceException();
-
-    private Label TerrainLabel => _terrainLabel ??=
-        GetNode<Label>("TerrainLabel") ?? throw new NullReferenceException();
-
-    private Label FoodLabel => _foodLabel ??=
-        GetNode<Label>("FoodLabel") ?? throw new NullReferenceException();
-
-    private Label ProductionLabel => _productionLabel ??=
-        GetNode<Label>("ProductionLabel") ?? throw new NullReferenceException();
+    private TextureRect TerrainImage => _terrainImage ??= GetNode<TextureRect>("TerrainImage");
+    private Label TerrainLabel => _terrainLabel ??= GetNode<Label>("TerrainLabel");
+    private Label FoodLabel => _foodLabel ??= GetNode<Label>("FoodLabel");
+    private Label ProductionLabel => _productionLabel ??= GetNode<Label>("ProductionLabel");
 
     public void SetHex(Hex hex)
     {
