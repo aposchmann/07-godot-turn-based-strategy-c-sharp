@@ -15,6 +15,9 @@ using Terrain = Terrain.Terrain;
 
 public partial class HexMap : Node2D
 {
+    [Signal]
+    public delegate void HexDeselectedEventHandler();
+
     private readonly Dictionary<Vector2I, Hex> _hexes = new();
 
     private TileMapLayer? _baseLayer;
@@ -22,19 +25,15 @@ public partial class HexMap : Node2D
     private TileMapLayer? _overlayLayer;
 
     private Vector2I? _selectedHex;
+
     [Export] public int Height = 60;
     [Export] public int Width = 100;
 
-    private TileMapLayer BaseLayer => _baseLayer ??=
-        GetNode<TileMapLayer>("BaseLayer") ?? throw new NullReferenceException();
+    private TileMapLayer BaseLayer => _baseLayer ??= GetNode<TileMapLayer>("BaseLayer");
+    private TileMapLayer BorderLayer => _borderLayer ??= GetNode<TileMapLayer>("BorderLayer");
+    private TileMapLayer OverlayLayer => _overlayLayer ??= GetNode<TileMapLayer>("OverlayLayer");
 
-    private TileMapLayer BorderLayer => _borderLayer ??=
-        GetNode<TileMapLayer>("BorderLayer") ?? throw new NullReferenceException();
-
-    private TileMapLayer OverlayLayer => _overlayLayer ??=
-        GetNode<TileMapLayer>("OverlayLayer") ?? throw new NullReferenceException();
-
-    public event EventHandler<Hex>? SelectedHexChanged;
+    public event EventHandler<HexSelectedEventArgs>? HexSelected;
 
     public override void _Ready()
     {
@@ -241,7 +240,7 @@ public partial class HexMap : Node2D
 
         GD.Print(clickedHex);
 
-        SelectedHexChanged?.Invoke(this, clickedHex);
+        HexSelected?.Invoke(this, new HexSelectedEventArgs { Hex = clickedHex });
     }
 
     private void SelectHex(Vector2I hexPosition)
@@ -258,5 +257,7 @@ public partial class HexMap : Node2D
         OverlayLayer.SetCell(selectedHex);
 
         _selectedHex = null;
+
+        EmitSignal(SignalName.HexDeselected);
     }
 }
