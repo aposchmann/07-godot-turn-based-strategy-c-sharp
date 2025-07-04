@@ -1,6 +1,6 @@
 using Godot;
 
-namespace de.nodapo.turnbasedstrategygame.Terrain;
+namespace de.nodapo.turnbasedstrategygame.terrain;
 
 public static class TerrainExtensions
 {

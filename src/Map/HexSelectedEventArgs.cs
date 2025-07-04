@@ -1,6 +1,6 @@
 using System;
 
-namespace de.nodapo.turnbasedstrategygame.Map;
+namespace de.nodapo.turnbasedstrategygame.map;
 
 public class HexSelectedEventArgs : EventArgs
 {

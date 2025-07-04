@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using de.nodapo.turnbasedstrategygame.Map;
+using de.nodapo.turnbasedstrategygame.map;
 using Godot;
 using static System.Single;
 using static Godot.Input;
 
-namespace de.nodapo.turnbasedstrategygame;
+namespace de.nodapo.turnbasedstrategygame.ui;
 
 public partial class Camera : Camera2D
 {

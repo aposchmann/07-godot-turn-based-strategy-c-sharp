@@ -2,16 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using de.nodapo.turnbasedstrategygame.Terrain;
+using de.nodapo.turnbasedstrategygame.terrain;
 using Godot;
-using static de.nodapo.turnbasedstrategygame.Terrain.Terrain;
+using static de.nodapo.turnbasedstrategygame.terrain.Terrain;
 using static Godot.FastNoiseLite.FractalTypeEnum;
 using static Godot.FastNoiseLite.NoiseTypeEnum;
 using static Godot.MouseButtonMask;
 
-namespace de.nodapo.turnbasedstrategygame.Map;
-
-using Terrain = Terrain.Terrain;
+namespace de.nodapo.turnbasedstrategygame.map;
 
 public partial class HexMap : Node2D
 {

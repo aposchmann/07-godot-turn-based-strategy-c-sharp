@@ -1,8 +1,7 @@
+using de.nodapo.turnbasedstrategygame.terrain;
 using Godot;
 
-namespace de.nodapo.turnbasedstrategygame.Map;
-
-using Terrain = Terrain.Terrain;
+namespace de.nodapo.turnbasedstrategygame.map;
 
 public class Hex
 {

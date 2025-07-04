@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using de.nodapo.turnbasedstrategygame.Map;
+using de.nodapo.turnbasedstrategygame.map;
 using Godot;
 
 namespace de.nodapo.turnbasedstrategygame;
