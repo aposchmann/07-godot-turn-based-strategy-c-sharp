@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using de.nodapo.turnbasedstrategygame.civilization;
 using de.nodapo.turnbasedstrategygame.terrain;
 using Godot;
 using static de.nodapo.turnbasedstrategygame.terrain.Terrain;
@@ -21,6 +22,9 @@ public partial class HexMap : Node2D
     private TileMapLayer? _baseLayer;
     private TileMapLayer? _borderLayer;
     private TileMapLayer? _overlayLayer;
+    private TileMapLayer? _civilizationColorLayer;
+
+    private PackedScene? _cityScene;
 
     private Vector2I? _selectedHex;
 
@@ -31,7 +35,15 @@ public partial class HexMap : Node2D
     private TileMapLayer BorderLayer => _borderLayer ??= GetNode<TileMapLayer>("BorderLayer");
     private TileMapLayer OverlayLayer => _overlayLayer ??= GetNode<TileMapLayer>("OverlayLayer");
 
+    private TileMapLayer CivilizationColorLayer =>
+        _civilizationColorLayer ??= GetNode<TileMapLayer>("CivilizationColorLayer");
+
+    private PackedScene CityScene => _cityScene ??= ResourceLoader.Load<PackedScene>("res://src/City.tscn");
+
     public event EventHandler<HexSelectedEventArgs>? HexSelected;
+
+    private List<Civilization> _civilizations = [];
+    private Dictionary<Vector2I, City> _cities = [];
 
     public override void _Ready()
     {
@@ -76,6 +88,74 @@ public partial class HexMap : Node2D
     public Vector2 ToLocal(Vector2I coordinates)
     {
         return BaseLayer.MapToLocal(coordinates);
+    }
+
+    public List<Vector2I> GetStartingLocations(int count)
+    {
+        HashSet<Vector2I> startingLocations = [];
+        List<Vector2I> plainTiles = [];
+
+        for (var x = 0; x < Width; x++)
+        for (var y = 0; y < Height; y++)
+        {
+            var coordinates = new Vector2I(x, y);
+
+            if (_hexes[coordinates].Terrain == Plains)
+            {
+                plainTiles.Add(coordinates);
+            }
+        }
+
+        var random = new Random();
+
+        while (startingLocations.Count < count)
+        {
+            var startingLocation = plainTiles[random.Next(plainTiles.Count)];
+            
+            
+            startingLocations.Add(startingLocation);
+        }
+        
+        return startingLocations.ToList();
+    }
+
+    public void CreateCity(Civilization civilization, Vector2I coordinates, string name)
+    {
+        var city = CityScene.Instantiate<City>();
+
+        city.HexMap = this;
+        city.Civilization = civilization;
+        city.CenterCoordinates = coordinates;
+        city.Position = ToLocal(coordinates);
+        city.AddTerritory([_hexes[coordinates]]);
+        city.AddTerritory(GetSurroundingHexes(coordinates));
+        city.CityName = name;
+
+        civilization.Cities.Add(city);
+
+        AddChild(city);
+
+        _hexes[coordinates].IsCityCenter = true;
+        _cities[coordinates] = city;
+
+        UpdateCivilizationTerritory(civilization);
+    }
+
+    private void UpdateCivilizationTerritory(Civilization civilization)
+    {
+        foreach (var hex in from city in civilization.Cities from hex in city.Territory select hex)
+        {
+            CivilizationColorLayer.SetCell(hex.Coordinates, 0, new Vector2I(0, 3), civilization.TerritoryColorId);
+        }
+    }
+
+    private List<Hex> GetSurroundingHexes(Vector2I center)
+    {
+        return BaseLayer
+            .GetSurroundingCells(center)
+            .Where(coordinates => _hexes.ContainsKey(coordinates))
+            .Select(coordinates => _hexes[coordinates])
+            .ToList();
     }
 
     private void GenerateTerrain()

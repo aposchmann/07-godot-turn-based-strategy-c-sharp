@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using de.nodapo.turnbasedstrategygame.civilization;
 using de.nodapo.turnbasedstrategygame.map;
 using Godot;
 
@@ -6,19 +8,55 @@ namespace de.nodapo.turnbasedstrategygame;
 
 public partial class City : Node2D
 {
-    private HexMap? _hexMap;
+    public HexMap? HexMap { get; set; }
 
-    private HexMap HexMap => _hexMap ??= GetNode<HexMap>("/root/Game/HexMap");
+    public Vector2I CenterCoordinates { get; set; }
 
-    public Vector2I centerCoordinates;
+    public List<Hex> Territory { get; set; } = [];
 
-    public List<Hex> territory;
+    public List<Hex> BorderTilePool = [];
 
-    public List<Hex> borderTilePool;
+    private Civilization? _civilization;
 
-    public string name;
+    public Civilization? Civilization
+    {
+        get => _civilization;
+        set
+        {
+            _civilization = value;
 
-    private Label _nameLabel;
+            if (value != null)
+                ImageSprite.Modulate = value.TerritoryColor;
+        }
+    }
 
-    private Sprite2D _imageSprite;
+    private string? _cityName;
+
+    public string? CityName
+    {
+        get => _cityName;
+        set
+        {
+            _cityName = value;
+            NameLabel.Text = value;
+        }
+    }
+
+    private Sprite2D? _imageSprite;
+    private Label? _nameLabel;
+
+    private Sprite2D ImageSprite => _imageSprite ??= GetNode<Sprite2D>("Image");
+    private Label NameLabel => _nameLabel ??= GetNode<Label>("Name");
+
+    public void AddTerritory(List<Hex> hexes)
+    {
+        hexes
+            .Where(hex => hex.OwnerCity == null)
+            .ToList()
+            .ForEach(hex =>
+            {
+                hex.OwnerCity = this;
+                Territory.Add(hex);
+            });
+    }
 }

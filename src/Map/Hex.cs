@@ -13,6 +13,10 @@ public class Hex
 
     public int Production { get; set; }
 
+    public City? OwnerCity { get; set; }
+
+    public bool IsCityCenter { get; set; }
+
     public override string ToString()
     {
         return $"{Coordinates} {Terrain} Food: {Food} Production: {Production}";
