@@ -1,3 +1,4 @@
+using de.nodapo.turnbasedstrategygame.city;
 using de.nodapo.turnbasedstrategygame.terrain;
 using Godot;
 
@@ -13,7 +14,7 @@ public class Hex
 
     public int Production { get; set; }
 
-    public city.City? OwnerCity { get; set; }
+    public City? OwnerCity { get; set; }
 
     public bool IsCityCenter { get; set; }
 

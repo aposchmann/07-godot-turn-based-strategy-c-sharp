@@ -1,13 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://cuqxg7s35ke5b"]
+[gd_scene load_steps=4 format=3 uid="uid://cuqxg7s35ke5b"]
 
+[ext_resource type="Script" uid="uid://xt713khjtews" path="res://src/city/CityPanel.cs" id="1_vxckl"]
 [ext_resource type="Texture2D" uid="uid://tcqpk3rv5xjk" path="res://textures/city_painting.jpg" id="1_xhb7e"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_xhb7e"]
-font_size = 24
+font_size = 20
 
 [node name="CityPanel" type="Panel"]
 offset_right = 250.0
 offset_bottom = 648.0
+script = ExtResource("1_vxckl")
 
 [node name="CityImage" type="TextureRect" parent="."]
 layout_mode = 0
