@@ -22,6 +22,12 @@ public partial class City : Node2D
 
     public List<Hex> Territory { get; } = [];
 
+    public int Population { get; set; } = 1;
+
+    public int TotalFood { get; set; }
+
+    public int TotalProduction { get; set; }
+
     public Civilization? Civilization
     {
         get => _civilization;
@@ -57,5 +63,13 @@ public partial class City : Node2D
                 hex.OwnerCity = this;
                 Territory.Add(hex);
             });
+
+        CalculateTerritoryResourceTotals();
+    }
+
+    private void CalculateTerritoryResourceTotals()
+    {
+        TotalFood = Territory.Sum(hex => hex.Food);
+        TotalProduction = Territory.Sum(hex => hex.Production);
     }
 }
