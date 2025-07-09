@@ -8,15 +8,19 @@ namespace de.nodapo.turnbasedstrategygame;
 
 public partial class City : Node2D
 {
+    private string? _cityName;
+
+    private Civilization? _civilization;
+
+    private Sprite2D? _imageSprite;
+    private Label? _nameLabel;
+
+    public List<Hex> BorderTilePool = [];
     public HexMap? HexMap { get; set; }
 
     public Vector2I CenterCoordinates { get; set; }
 
     public List<Hex> Territory { get; set; } = [];
-
-    public List<Hex> BorderTilePool = [];
-
-    private Civilization? _civilization;
 
     public Civilization? Civilization
     {
@@ -30,8 +34,6 @@ public partial class City : Node2D
         }
     }
 
-    private string? _cityName;
-
     public string? CityName
     {
         get => _cityName;
@@ -41,9 +43,6 @@ public partial class City : Node2D
             NameLabel.Text = value;
         }
     }
-
-    private Sprite2D? _imageSprite;
-    private Label? _nameLabel;
 
     private Sprite2D ImageSprite => _imageSprite ??= GetNode<Sprite2D>("Image");
     private Label NameLabel => _nameLabel ??= GetNode<Label>("Name");

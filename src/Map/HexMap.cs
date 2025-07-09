@@ -22,10 +22,13 @@ public partial class HexMap : Node2D
 
     private TileMapLayer? _baseLayer;
     private TileMapLayer? _borderLayer;
-    private TileMapLayer? _overlayLayer;
-    private TileMapLayer? _civilizationColorLayer;
+    private readonly Dictionary<Vector2I, City> _cities = [];
 
     private PackedScene? _cityScene;
+    private TileMapLayer? _civilizationColorLayer;
+
+    private List<Civilization> _civilizations = [];
+    private TileMapLayer? _overlayLayer;
 
     private Vector2I? _selectedHex;
 
@@ -42,9 +45,6 @@ public partial class HexMap : Node2D
     private PackedScene CityScene => _cityScene ??= ResourceLoader.Load<PackedScene>("res://src/City.tscn");
 
     public event EventHandler<HexSelectedEventArgs>? HexSelected;
-
-    private List<Civilization> _civilizations = [];
-    private Dictionary<Vector2I, City> _cities = [];
 
     public override void _Ready()
     {
@@ -101,10 +101,7 @@ public partial class HexMap : Node2D
         {
             var coordinates = new Vector2I(x, y);
 
-            if (_hexes[coordinates].Terrain == Plains)
-            {
-                plainTiles.Add(coordinates);
-            }
+            if (_hexes[coordinates].Terrain == Plains) plainTiles.Add(coordinates);
         }
 
         var random = new Random();
@@ -153,9 +150,7 @@ public partial class HexMap : Node2D
     private void UpdateCivilizationTerritory(Civilization civilization)
     {
         foreach (var hex in from city in civilization.Cities from hex in city.Territory select hex)
-        {
             CivilizationColorLayer.SetCell(hex.Coordinates, 0, new Vector2I(0, 3), civilization.TerritoryColorId);
-        }
     }
 
     private List<Hex> GetSurroundingHexes(Vector2I center)
