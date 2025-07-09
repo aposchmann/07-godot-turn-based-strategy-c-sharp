@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using de.nodapo.turnbasedstrategygame.civilization;
 using de.nodapo.turnbasedstrategygame.terrain;
 using Godot;
+using static System.Math;
 using static de.nodapo.turnbasedstrategygame.terrain.Terrain;
 using static Godot.FastNoiseLite.FractalTypeEnum;
 using static Godot.FastNoiseLite.NoiseTypeEnum;
@@ -111,11 +112,19 @@ public partial class HexMap : Node2D
         while (startingLocations.Count < count)
         {
             var startingLocation = plainTiles[random.Next(plainTiles.Count)];
-            
-            
+
+            if (startingLocation.X < 3 ||
+                startingLocation.X > Width - 3 ||
+                startingLocation.Y < 3 ||
+                startingLocation.Y > Height - 3) continue;
+
+            if (startingLocations.Any(coordinates =>
+                    Abs(startingLocation.X - coordinates.X) < 20 ||
+                    Abs(startingLocation.Y - coordinates.Y) < 20)) continue;
+
             startingLocations.Add(startingLocation);
         }
-        
+
         return startingLocations.ToList();
     }
 
