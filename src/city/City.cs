@@ -4,7 +4,7 @@ using de.nodapo.turnbasedstrategygame.civilization;
 using de.nodapo.turnbasedstrategygame.map;
 using Godot;
 
-namespace de.nodapo.turnbasedstrategygame;
+namespace de.nodapo.turnbasedstrategygame.city;
 
 public partial class City : Node2D
 {
@@ -21,6 +21,12 @@ public partial class City : Node2D
     public Vector2I CenterCoordinates { get; set; }
 
     public List<Hex> Territory { get; } = [];
+
+    public int Population { get; private set; } = 1;
+
+    public int TotalFood { get; private set; }
+
+    public int TotalProduction { get; private set; }
 
     public Civilization? Civilization
     {
@@ -57,5 +63,13 @@ public partial class City : Node2D
                 hex.OwnerCity = this;
                 Territory.Add(hex);
             });
+
+        CalculateTerritoryResourceTotals();
+    }
+
+    private void CalculateTerritoryResourceTotals()
+    {
+        TotalFood = Territory.Sum(hex => hex.Food);
+        TotalProduction = Territory.Sum(hex => hex.Production);
     }
 }

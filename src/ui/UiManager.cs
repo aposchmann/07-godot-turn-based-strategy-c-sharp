@@ -1,3 +1,4 @@
+using de.nodapo.turnbasedstrategygame.city;
 using de.nodapo.turnbasedstrategygame.map;
 using de.nodapo.turnbasedstrategygame.terrain;
 using Godot;
@@ -7,12 +8,19 @@ namespace de.nodapo.turnbasedstrategygame.ui;
 
 public partial class UiManager : Node2D
 {
+    private CityPanel? _cityPanel;
+    private PackedScene? _cityPanelScene;
     private HexMap? _hexMap;
+
     private TerrainPanel? _terrainPanel;
+
     private PackedScene? _terrainPanelScene;
 
-    private PackedScene TerrainPanelScene =>
-        _terrainPanelScene ??= Load<PackedScene>("res://src/terrain/TerrainPanel.tscn");
+    private PackedScene TerrainPanelScene => _terrainPanelScene
+        ??= Load<PackedScene>("res://src/terrain/TerrainPanel.tscn");
+
+    private PackedScene CityPanelScene => _cityPanelScene
+        ??= Load<PackedScene>("res://src/city/CityPanel.tscn");
 
     private HexMap HexMap => _hexMap ??= GetNode<HexMap>("/root/Game/HexMap");
 
@@ -26,21 +34,46 @@ public partial class UiManager : Node2D
         HexMap.HexSelected -= OnHexSelected;
     }
 
-    public void HideTerrainPanel()
+    public void HidePanels()
     {
-        _terrainPanel?.QueueFree();
-        _terrainPanel = null;
+        if (_terrainPanel != null)
+        {
+            RemoveChild(_terrainPanel);
+
+            _terrainPanel.QueueFree();
+            _terrainPanel = null;
+        }
+
+        if (_cityPanel != null)
+        {
+            RemoveChild(_cityPanel);
+
+            _cityPanel.QueueFree();
+            _cityPanel = null;
+        }
     }
 
     private void OnHexSelected(object? _, HexSelectedEventArgs hexSelectedEventArgs)
     {
-        if (_terrainPanel == null)
+        HidePanels();
+
+        var hex = hexSelectedEventArgs.Hex;
+
+        if (hex is { IsCityCenter: true, OwnerCity: not null })
+        {
+            _cityPanel = CityPanelScene.Instantiate<CityPanel>();
+
+            AddChild(_cityPanel);
+
+            _cityPanel.SetCity(hex.OwnerCity);
+        }
+        else
         {
             _terrainPanel = TerrainPanelScene.Instantiate<TerrainPanel>();
 
             AddChild(_terrainPanel);
-        }
 
-        _terrainPanel.SetHex(hexSelectedEventArgs.Hex);
+            _terrainPanel.SetHex(hex);
+        }
     }
 }

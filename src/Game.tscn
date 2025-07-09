@@ -90,4 +90,4 @@ tile_set = SubResource("TileSet_3msxb")
 
 [node name="UiManager" parent="CanvasLayer" instance=ExtResource("5_km1yn")]
 
-[connection signal="HexDeselected" from="HexMap" to="CanvasLayer/UiManager" method="HideTerrainPanel"]
+[connection signal="HexDeselected" from="HexMap" to="CanvasLayer/UiManager" method="HidePanels"]

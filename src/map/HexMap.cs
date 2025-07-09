@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using de.nodapo.turnbasedstrategygame.city;
 using de.nodapo.turnbasedstrategygame.civilization;
 using de.nodapo.turnbasedstrategygame.terrain;
 using Godot;
@@ -51,7 +52,7 @@ public partial class HexMap : Node2D
                                                throw new InvalidOperationException(
                                                    "TileSet source at index 0 is not a TileSetAtlasSource. Check the CivilizationColorLayer configuration.");
 
-    private PackedScene CityScene => _cityScene ??= ResourceLoader.Load<PackedScene>("res://src/City.tscn");
+    private PackedScene CityScene => _cityScene ??= ResourceLoader.Load<PackedScene>("res://src/city/City.tscn");
 
     public event EventHandler<HexSelectedEventArgs>? HexSelected;
 
@@ -175,7 +176,7 @@ public partial class HexMap : Node2D
 
         civilization.TerritoryColorId = alternativeTileId;
 
-        CreateCity(civilization, startLocation, $"{civilization.Name} Start City");
+        CreateCity(civilization, startLocation, $"{civilization.Name} City");
 
         _civilizations.Add(civilization);
     }
