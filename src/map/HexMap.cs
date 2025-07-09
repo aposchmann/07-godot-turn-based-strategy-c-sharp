@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using de.nodapo.turnbasedstrategygame.city;
 using de.nodapo.turnbasedstrategygame.civilization;
 using de.nodapo.turnbasedstrategygame.terrain;
 using Godot;
@@ -20,7 +21,7 @@ public partial class HexMap : Node2D
     // Base tile coordinates in the tilemap atlas used for civilization territory colors
     private static readonly Vector2I CivilizationColorBase = new(0, 3);
 
-    private readonly Dictionary<Vector2I, city.City> _cities = [];
+    private readonly Dictionary<Vector2I, City> _cities = [];
 
     private readonly List<Civilization> _civilizations = [];
 
@@ -175,14 +176,14 @@ public partial class HexMap : Node2D
 
         civilization.TerritoryColorId = alternativeTileId;
 
-        CreateCity(civilization, startLocation, $"{civilization.Name} Start City");
+        CreateCity(civilization, startLocation, $"{civilization.Name} City");
 
         _civilizations.Add(civilization);
     }
 
     private void CreateCity(Civilization civilization, Vector2I coordinates, string name)
     {
-        var city = CityScene.Instantiate<city.City>();
+        var city = CityScene.Instantiate<City>();
 
         city.HexMap = this;
         city.Civilization = civilization;

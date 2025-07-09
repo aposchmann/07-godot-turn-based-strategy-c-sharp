@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using de.nodapo.turnbasedstrategygame.city;
 using Godot;
 
 namespace de.nodapo.turnbasedstrategygame.civilization;
 
 public class Civilization
 {
-    public readonly List<city.City> Cities = [];
+    public readonly List<City> Cities = [];
     public required int Id;
 
     public required string Name;

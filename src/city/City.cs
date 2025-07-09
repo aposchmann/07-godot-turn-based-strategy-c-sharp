@@ -22,11 +22,11 @@ public partial class City : Node2D
 
     public List<Hex> Territory { get; } = [];
 
-    public int Population { get; set; } = 1;
+    public int Population { get; private set; } = 1;
 
-    public int TotalFood { get; set; }
+    public int TotalFood { get; private set; }
 
-    public int TotalProduction { get; set; }
+    public int TotalProduction { get; private set; }
 
     public Civilization? Civilization
     {

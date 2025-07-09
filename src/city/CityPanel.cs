@@ -4,9 +4,9 @@ namespace de.nodapo.turnbasedstrategygame.city;
 
 public partial class CityPanel : Panel
 {
+    private Label? _foodLabel;
     private Label? _nameLabel;
     private Label? _populationLabel;
-    private Label? _foodLabel;
     private Label? _productionLabel;
 
     private Label NameLabel => _nameLabel ??= GetNode<Label>("CityName");

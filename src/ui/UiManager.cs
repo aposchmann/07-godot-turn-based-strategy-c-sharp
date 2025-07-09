@@ -8,13 +8,13 @@ namespace de.nodapo.turnbasedstrategygame.ui;
 
 public partial class UiManager : Node2D
 {
+    private CityPanel? _cityPanel;
+    private PackedScene? _cityPanelScene;
     private HexMap? _hexMap;
 
     private TerrainPanel? _terrainPanel;
-    private CityPanel? _cityPanel;
 
     private PackedScene? _terrainPanelScene;
-    private PackedScene? _cityPanelScene;
 
     private PackedScene TerrainPanelScene => _terrainPanelScene
         ??= Load<PackedScene>("res://src/terrain/TerrainPanel.tscn");
@@ -59,13 +59,13 @@ public partial class UiManager : Node2D
 
         var hex = hexSelectedEventArgs.Hex;
 
-        if (hex.IsCityCenter)
+        if (hex is { IsCityCenter: true, OwnerCity: not null })
         {
             _cityPanel = CityPanelScene.Instantiate<CityPanel>();
 
             AddChild(_cityPanel);
 
-            _cityPanel.SetCity(hex.OwnerCity!);
+            _cityPanel.SetCity(hex.OwnerCity);
         }
         else
         {
