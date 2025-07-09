@@ -17,6 +17,7 @@ public partial class HexMap : Node2D
     [Signal]
     public delegate void HexDeselectedEventHandler();
 
+    // Base tile coordinates in the tilemap atlas used for civilization territory colors
     private static readonly Vector2I CivilizationColorBase = new(0, 3);
 
     private readonly Dictionary<Vector2I, City> _cities = [];
@@ -46,8 +47,9 @@ public partial class HexMap : Node2D
     private TileMapLayer CivilizationColorLayer => _civilizationColorLayer
         ??= GetNode<TileMapLayer>("CivilizationColorLayer");
 
-    private TileSetAtlasSource TerrainAtlas =>
-        CivilizationColorLayer.TileSet.GetSource(0) as TileSetAtlasSource ?? throw new InvalidOperationException();
+    private TileSetAtlasSource TerrainAtlas => CivilizationColorLayer.TileSet.GetSource(0) as TileSetAtlasSource ??
+                                               throw new InvalidOperationException(
+                                                   "TileSet source at index 0 is not a TileSetAtlasSource. Check the CivilizationColorLayer configuration.");
 
     private PackedScene CityScene => _cityScene ??= ResourceLoader.Load<PackedScene>("res://src/City.tscn");
 

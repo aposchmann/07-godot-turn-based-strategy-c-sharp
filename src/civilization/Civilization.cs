@@ -21,6 +21,6 @@ public class Civilization
     {
         var random = new Random();
 
-        TerritoryColor = new Color(random.Next(255) / 255f, random.Next(255) / 255f, random.Next(255) / 255f);
+        TerritoryColor = new Color(random.NextSingle(), random.NextSingle(), random.NextSingle());
     }
 }
