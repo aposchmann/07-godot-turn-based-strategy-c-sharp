@@ -1,8 +1,7 @@
+using de.nodapo.turnbasedstrategygame.terrain;
 using Godot;
 
-namespace de.nodapo.turnbasedstrategygame.Map;
-
-using Terrain = Terrain.Terrain;
+namespace de.nodapo.turnbasedstrategygame.map;
 
 public class Hex
 {
@@ -13,6 +12,10 @@ public class Hex
     public int Food { get; set; }
 
     public int Production { get; set; }
+
+    public City? OwnerCity { get; set; }
+
+    public bool IsCityCenter { get; set; }
 
     public override string ToString()
     {

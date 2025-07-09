@@ -7,7 +7,7 @@ using static Godot.FastNoiseLite;
 using static Godot.FastNoiseLite.FractalTypeEnum;
 using static Godot.FastNoiseLite.NoiseTypeEnum;
 
-namespace de.nodapo.turnbasedstrategygame.Terrain;
+namespace de.nodapo.turnbasedstrategygame.terrain;
 
 public class TerrainNoiseBuilder
 {

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using de.nodapo.turnbasedstrategygame.Map;
+using de.nodapo.turnbasedstrategygame.map;
 using Godot;
-using static de.nodapo.turnbasedstrategygame.Terrain.Terrain;
+using static de.nodapo.turnbasedstrategygame.terrain.Terrain;
 using static Godot.ResourceLoader;
 
-namespace de.nodapo.turnbasedstrategygame.Terrain;
+namespace de.nodapo.turnbasedstrategygame.terrain;
 
 public partial class TerrainPanel : Panel
 {

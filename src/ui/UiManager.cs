@@ -1,5 +1,5 @@
-using de.nodapo.turnbasedstrategygame.Map;
-using de.nodapo.turnbasedstrategygame.Terrain;
+using de.nodapo.turnbasedstrategygame.map;
+using de.nodapo.turnbasedstrategygame.terrain;
 using Godot;
 using static Godot.ResourceLoader;
 
