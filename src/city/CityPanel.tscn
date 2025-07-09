@@ -1,0 +1,50 @@
+[gd_scene load_steps=3 format=3 uid="uid://cuqxg7s35ke5b"]
+
+[ext_resource type="Texture2D" uid="uid://tcqpk3rv5xjk" path="res://textures/city_painting.jpg" id="1_xhb7e"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_xhb7e"]
+font_size = 24
+
+[node name="CityPanel" type="Panel"]
+offset_right = 250.0
+offset_bottom = 648.0
+
+[node name="CityImage" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 250.0
+offset_bottom = 160.0
+texture = ExtResource("1_xhb7e")
+expand_mode = 1
+
+[node name="CityName" type="Label" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 170.0
+offset_right = 240.0
+offset_bottom = 204.0
+text = "City Name"
+label_settings = SubResource("LabelSettings_xhb7e")
+
+[node name="Population" type="Label" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 210.0
+offset_right = 240.0
+offset_bottom = 233.0
+text = "Population:"
+
+[node name="Food" type="Label" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 240.0
+offset_right = 240.0
+offset_bottom = 263.0
+text = "Food:"
+
+[node name="Production" type="Label" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 270.0
+offset_right = 240.0
+offset_bottom = 293.0
+text = "Production:"
