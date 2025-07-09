@@ -6,7 +6,7 @@ namespace de.nodapo.turnbasedstrategygame.civilization;
 
 public class Civilization
 {
-    public readonly List<City> Cities = [];
+    public readonly List<city.City> Cities = [];
     public required int Id;
 
     public required string Name;

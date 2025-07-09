@@ -13,7 +13,7 @@ public class Hex
 
     public int Production { get; set; }
 
-    public City? OwnerCity { get; set; }
+    public city.City? OwnerCity { get; set; }
 
     public bool IsCityCenter { get; set; }
 

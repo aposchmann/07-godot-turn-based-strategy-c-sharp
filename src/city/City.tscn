@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://2ylkc8yp870a"]
 
 [ext_resource type="Texture2D" uid="uid://ddqvk0sejmswj" path="res://textures/city.png" id="1_4412u"]
-[ext_resource type="Script" uid="uid://ccxu30u7otybn" path="res://src/City.cs" id="1_giqkp"]
+[ext_resource type="Script" uid="uid://ccxu30u7otybn" path="res://src/city/City.cs" id="1_giqkp"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_giqkp"]
 font_size = 24

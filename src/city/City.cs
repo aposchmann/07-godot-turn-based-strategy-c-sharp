@@ -4,7 +4,7 @@ using de.nodapo.turnbasedstrategygame.civilization;
 using de.nodapo.turnbasedstrategygame.map;
 using Godot;
 
-namespace de.nodapo.turnbasedstrategygame;
+namespace de.nodapo.turnbasedstrategygame.city;
 
 public partial class City : Node2D
 {
