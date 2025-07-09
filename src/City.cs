@@ -20,7 +20,7 @@ public partial class City : Node2D
 
     public Vector2I CenterCoordinates { get; set; }
 
-    public List<Hex> Territory { get; set; } = [];
+    public List<Hex> Territory { get; } = [];
 
     public Civilization? Civilization
     {

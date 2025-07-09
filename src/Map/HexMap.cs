@@ -18,7 +18,7 @@ public partial class HexMap : Node2D
     public delegate void HexDeselectedEventHandler();
 
     private static readonly Vector2I CivilizationColorBase = new(0, 3);
-    
+
     private readonly Dictionary<Vector2I, City> _cities = [];
 
     private readonly List<Civilization> _civilizations = [];
@@ -36,6 +36,7 @@ public partial class HexMap : Node2D
 
     [Export] public int Height = 60;
     [Export] public int NumberOfAiCivilizations = 6;
+    [Export] public Color PlayerColor = Colors.HotPink;
     [Export] public int Width = 100;
 
     private TileMapLayer BaseLayer => _baseLayer ??= GetNode<TileMapLayer>("BaseLayer");
@@ -59,6 +60,7 @@ public partial class HexMap : Node2D
 
         var startingLocations = GetStartingLocations(NumberOfAiCivilizations + 1);
 
+        CreatePlayerCivilization(startingLocations[0]);
         CreateAiCivilizations(startingLocations);
     }
 
@@ -133,29 +135,47 @@ public partial class HexMap : Node2D
         return startingLocations.ToList();
     }
 
+    private void CreatePlayerCivilization(Vector2I startLocation)
+    {
+        var civilization = new Civilization
+        {
+            Id = 0,
+            Name = "Player",
+            PlayerCivilization = true,
+            TerritoryColor = PlayerColor
+        };
+
+        CreateCivilization(startLocation, civilization);
+    }
+
     private void CreateAiCivilizations(List<Vector2I> startLocations)
     {
-        for (var i = 0; i < NumberOfAiCivilizations; i++)
+        for (var i = 1; i <= NumberOfAiCivilizations; i++)
         {
             var civilization = new Civilization
             {
-                Id = i + 1,
-                Name = $"Civilization {i + 1}",
+                Id = i,
+                Name = $"Civilization {i}",
                 PlayerCivilization = false
             };
 
             civilization.SetRandomColor();
 
-            var alternativeTileId = TerrainAtlas.CreateAlternativeTile(CivilizationColorBase);
-
-            TerrainAtlas.GetTileData(CivilizationColorBase, alternativeTileId).Modulate = civilization.TerritoryColor;
-
-            civilization.TerritoryColorId = alternativeTileId;
-
-            CreateCity(civilization, startLocations[i], $"{civilization.Name} Start City");
-
-            _civilizations.Add(civilization);
+            CreateCivilization(startLocations[i], civilization);
         }
+    }
+
+    private void CreateCivilization(Vector2I startLocation, Civilization civilization)
+    {
+        var alternativeTileId = TerrainAtlas.CreateAlternativeTile(CivilizationColorBase);
+
+        TerrainAtlas.GetTileData(CivilizationColorBase, alternativeTileId).Modulate = civilization.TerritoryColor;
+
+        civilization.TerritoryColorId = alternativeTileId;
+
+        CreateCity(civilization, startLocation, $"{civilization.Name} Start City");
+
+        _civilizations.Add(civilization);
     }
 
     private void CreateCity(Civilization civilization, Vector2I coordinates, string name)
