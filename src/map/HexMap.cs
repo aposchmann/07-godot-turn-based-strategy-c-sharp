@@ -69,7 +69,7 @@ public partial class HexMap : Node2D
 
     public void ProcessEndTurn()
     {
-        GD.Print("Turn ended!");
+        _civilizations.ForEach(civilization => civilization.Cities.ForEach(city => city.ProcessEndTurn()));
     }
 
     private void GenerateResources()
