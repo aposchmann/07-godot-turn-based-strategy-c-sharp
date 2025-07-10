@@ -9,6 +9,7 @@ namespace de.nodapo.turnbasedstrategygame.ui;
 public partial class UiManager : Node2D
 {
     private CityPanel? _cityPanel;
+    private GeneralPanel? _generalPanel;
     private PackedScene? _cityPanelScene;
     private HexMap? _hexMap;
 
@@ -23,6 +24,7 @@ public partial class UiManager : Node2D
         ??= Load<PackedScene>("res://src/city/CityPanel.tscn");
 
     private HexMap HexMap => _hexMap ??= GetNode<HexMap>("/root/Game/HexMap");
+    private GeneralPanel GeneralPanel => _generalPanel ?? GetNode<GeneralPanel>("GeneralPanel");
 
     public override void _Ready()
     {
@@ -51,6 +53,11 @@ public partial class UiManager : Node2D
             _cityPanel.QueueFree();
             _cityPanel = null;
         }
+    }
+
+    public void ProcessEndTurn()
+    {
+        HexMap.ProcessEndTurn();
     }
 
     private void OnHexSelected(object? _, HexSelectedEventArgs hexSelectedEventArgs)

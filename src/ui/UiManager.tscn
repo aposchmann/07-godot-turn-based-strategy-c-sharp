@@ -7,3 +7,5 @@
 script = ExtResource("1_3ii56")
 
 [node name="GeneralPanel" parent="." instance=ExtResource("2_m0q50")]
+
+[connection signal="EndTurn" from="GeneralPanel" to="." method="ProcessEndTurn"]

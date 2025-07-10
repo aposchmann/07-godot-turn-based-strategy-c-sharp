@@ -67,6 +67,11 @@ public partial class HexMap : Node2D
         CreateAiCivilizations(startingLocations);
     }
 
+    public void ProcessEndTurn()
+    {
+        GD.Print("Turn ended!");
+    }
+
     private void GenerateResources()
     {
         var random = new Random();
