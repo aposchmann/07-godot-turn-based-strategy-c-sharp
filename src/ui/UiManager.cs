@@ -58,6 +58,8 @@ public partial class UiManager : Node2D
     public void ProcessEndTurn()
     {
         HexMap.ProcessEndTurn();
+
+        _cityPanel?.Refresh();
     }
 
     private void OnHexSelected(object? _, HexSelectedEventArgs hexSelectedEventArgs)
