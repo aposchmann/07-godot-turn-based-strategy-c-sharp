@@ -36,10 +36,10 @@ public partial class HexMap : Node2D
 
     private Vector2I? _selectedHex;
 
-    [Export] public int Height = 60;
-    [Export] public int NumberOfAiCivilizations = 6;
+    [Export] public int Height = 30;
+    [Export] public int MaxNumberOfAiCivilizations = 6;
     [Export] public Color PlayerColor = Colors.HotPink;
-    [Export] public int Width = 100;
+    [Export] public int Width = 40;
 
     private TileMapLayer BaseLayer => _baseLayer ??= GetNode<TileMapLayer>("BaseLayer");
     private TileMapLayer BorderLayer => _borderLayer ??= GetNode<TileMapLayer>("BorderLayer");
@@ -61,10 +61,16 @@ public partial class HexMap : Node2D
         GenerateTerrain();
         GenerateResources();
 
-        var startingLocations = GetStartingLocations(NumberOfAiCivilizations + 1);
+        var startingLocations = GetStartingLocations(MaxNumberOfAiCivilizations + 1);
 
         CreatePlayerCivilization(startingLocations[0]);
         CreateAiCivilizations(startingLocations);
+    }
+
+    public void ProcessEndTurn()
+    {
+        _civilizations.ForEach(civilization => civilization.Cities.ForEach(city => city.ProcessEndTurn()));
+        _civilizations.ForEach(UpdateCivilizationTerritory);
     }
 
     private void GenerateResources()
@@ -121,16 +127,18 @@ public partial class HexMap : Node2D
 
         var random = new Random();
 
-        while (startingLocations.Count < count)
+        while (startingLocations.Count < count && plainTiles.Count > 0)
         {
             var startingLocation = plainTiles[random.Next(plainTiles.Count)];
+
+            plainTiles.Remove(startingLocation);
 
             if (startingLocation.X < 3 ||
                 startingLocation.X > Width - 3 ||
                 startingLocation.Y < 3 ||
                 startingLocation.Y > Height - 3) continue;
 
-            if (startingLocations.Any(coordinates => coordinates.DistanceTo(startingLocation) < 15)) continue;
+            if (startingLocations.Any(coordinates => coordinates.DistanceTo(startingLocation) < 10)) continue;
 
             startingLocations.Add(startingLocation);
         }
@@ -153,7 +161,7 @@ public partial class HexMap : Node2D
 
     private void CreateAiCivilizations(List<Vector2I> startLocations)
     {
-        for (var i = 1; i <= NumberOfAiCivilizations; i++)
+        for (var i = 1; i < startLocations.Count; i++)
         {
             var civilization = new Civilization
             {
@@ -209,7 +217,7 @@ public partial class HexMap : Node2D
             CivilizationColorLayer.SetCell(hex.Coordinates, 0, CivilizationColorBase, civilization.TerritoryColorId);
     }
 
-    private List<Hex> GetSurroundingHexes(Vector2I center)
+    public List<Hex> GetSurroundingHexes(Vector2I center)
     {
         return BaseLayer
             .GetSurroundingCells(center)

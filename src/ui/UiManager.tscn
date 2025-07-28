@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://dnnyh8hw168pi"]
+[gd_scene load_steps=3 format=3 uid="uid://dnnyh8hw168pi"]
 
 [ext_resource type="Script" uid="uid://blxskldugk3oq" path="res://src/ui/UiManager.cs" id="1_3ii56"]
+[ext_resource type="PackedScene" uid="uid://bv78e32t7860e" path="res://src/ui/GeneralPanel.tscn" id="2_m0q50"]
 
 [node name="UiManager" type="Node2D"]
 script = ExtResource("1_3ii56")
+
+[node name="GeneralPanel" parent="." instance=ExtResource("2_m0q50")]
+
+[connection signal="EndTurn" from="GeneralPanel" to="." method="ProcessEndTurn"]

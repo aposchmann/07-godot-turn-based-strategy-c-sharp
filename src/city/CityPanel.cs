@@ -4,6 +4,7 @@ namespace de.nodapo.turnbasedstrategygame.city;
 
 public partial class CityPanel : Panel
 {
+    private City? _city;
     private Label? _foodLabel;
     private Label? _nameLabel;
     private Label? _populationLabel;
@@ -16,9 +17,16 @@ public partial class CityPanel : Panel
 
     public void SetCity(City city)
     {
-        NameLabel.Text = city.CityName;
-        PopulationLabel.Text = $"Population: {city.Population}";
-        FoodLabel.Text = $"Food: {city.TotalFood}";
-        ProductionLabel.Text = $"Production: {city.TotalProduction}";
+        _city = city;
+
+        Refresh();
+    }
+
+    public void Refresh()
+    {
+        NameLabel.Text = _city?.CityName;
+        PopulationLabel.Text = $"Population: {_city?.Population}";
+        FoodLabel.Text = $"Food: {_city?.TotalFood}";
+        ProductionLabel.Text = $"Production: {_city?.TotalProduction}";
     }
 }

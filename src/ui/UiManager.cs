@@ -10,6 +10,7 @@ public partial class UiManager : Node2D
 {
     private CityPanel? _cityPanel;
     private PackedScene? _cityPanelScene;
+    private GeneralPanel? _generalPanel;
     private HexMap? _hexMap;
 
     private TerrainPanel? _terrainPanel;
@@ -23,6 +24,7 @@ public partial class UiManager : Node2D
         ??= Load<PackedScene>("res://src/city/CityPanel.tscn");
 
     private HexMap HexMap => _hexMap ??= GetNode<HexMap>("/root/Game/HexMap");
+    private GeneralPanel GeneralPanel => _generalPanel ??= GetNode<GeneralPanel>("GeneralPanel");
 
     public override void _Ready()
     {
@@ -51,6 +53,13 @@ public partial class UiManager : Node2D
             _cityPanel.QueueFree();
             _cityPanel = null;
         }
+    }
+
+    public void ProcessEndTurn()
+    {
+        HexMap.ProcessEndTurn();
+
+        _cityPanel?.Refresh();
     }
 
     private void OnHexSelected(object? _, HexSelectedEventArgs hexSelectedEventArgs)
