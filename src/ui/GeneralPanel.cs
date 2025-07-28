@@ -7,16 +7,19 @@ public partial class GeneralPanel : Panel
     [Signal]
     public delegate void EndTurnEventHandler();
 
-    private int _turns;
+    private Button? _turnButton;
 
     private Label? _turnLabel;
-    private Button? _turnButton;
+
+    private int _turns;
 
     private Label TurnLabel => _turnLabel ??= GetNode<Label>("TurnLabel");
     private Button TurnButton => _turnButton ??= GetNode<Button>("TurnButton");
 
     public override void _Ready()
     {
+        IncrementTurn();
+
         TurnButton.Pressed += () => EmitSignal(SignalName.EndTurn);
     }
 

@@ -11,6 +11,7 @@ namespace de.nodapo.turnbasedstrategygame.city;
 public partial class City : Node2D
 {
     private const int PopulationThresholdIncrease = 20;
+    private readonly Random _random = new();
 
     private string? _cityName;
 
@@ -66,16 +67,13 @@ public partial class City : Node2D
     {
         PopulationGrowthTracker += TotalFood;
 
-        if (PopulationGrowthTracker >= PopulationGrowthThreshold)
-        {
-            Population++;
-            PopulationGrowthTracker %= PopulationGrowthThreshold;
-            PopulationGrowthThreshold += PopulationThresholdIncrease;
+        if (PopulationGrowthTracker < PopulationGrowthThreshold) return;
 
-            AddNeighborHexToTerritory();
-        }
+        Population++;
+        PopulationGrowthTracker %= PopulationGrowthThreshold;
+        PopulationGrowthThreshold += PopulationThresholdIncrease;
 
-        GD.Print($"City: {CityName} - Pool Size: {_populationGrowthHexPool.Count}");
+        AddNeighborHexToTerritory();
     }
 
     public void AddTerritory(List<Hex> hexes)
@@ -110,7 +108,7 @@ public partial class City : Node2D
             .Where(neighborHex => !_populationGrowthHexPool.Contains(neighborHex))
             .Where(neighborHex => !new[]
             {
-                Terrain.Water, Terrain.Ice, Terrain.Coast, Terrain.Mountain,
+                Terrain.Water, Terrain.Ice, Terrain.Coast, Terrain.Mountain
             }.Contains(neighborHex.Terrain))
             .Where(neighborHex => neighborHex.OwnerCity == null) ?? []);
     }
@@ -121,6 +119,6 @@ public partial class City : Node2D
 
         if (_populationGrowthHexPool.Count == 0) return;
 
-        AddTerritory([_populationGrowthHexPool[new Random().Next(_populationGrowthHexPool.Count)]]);
+        AddTerritory([_populationGrowthHexPool[_random.Next(_populationGrowthHexPool.Count)]]);
     }
 }

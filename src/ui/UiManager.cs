@@ -9,8 +9,8 @@ namespace de.nodapo.turnbasedstrategygame.ui;
 public partial class UiManager : Node2D
 {
     private CityPanel? _cityPanel;
-    private GeneralPanel? _generalPanel;
     private PackedScene? _cityPanelScene;
+    private GeneralPanel? _generalPanel;
     private HexMap? _hexMap;
 
     private TerrainPanel? _terrainPanel;
@@ -24,7 +24,7 @@ public partial class UiManager : Node2D
         ??= Load<PackedScene>("res://src/city/CityPanel.tscn");
 
     private HexMap HexMap => _hexMap ??= GetNode<HexMap>("/root/Game/HexMap");
-    private GeneralPanel GeneralPanel => _generalPanel ?? GetNode<GeneralPanel>("GeneralPanel");
+    private GeneralPanel GeneralPanel => _generalPanel ??= GetNode<GeneralPanel>("GeneralPanel");
 
     public override void _Ready()
     {
