@@ -36,10 +36,10 @@ public partial class HexMap : Node2D
 
     private Vector2I? _selectedHex;
 
-    [Export] public int Height = 30;
+    [Export] public int Height = 40;
     [Export] public int MaxNumberOfAiCivilizations = 6;
     [Export] public Color PlayerColor = Colors.HotPink;
-    [Export] public int Width = 40;
+    [Export] public int Width = 60;
 
     private TileMapLayer BaseLayer => _baseLayer ??= GetNode<TileMapLayer>("BaseLayer");
     private TileMapLayer BorderLayer => _borderLayer ??= GetNode<TileMapLayer>("BorderLayer");
