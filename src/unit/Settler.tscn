@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3p5kck7bdvkw"]
+
+[ext_resource type="PackedScene" uid="uid://wdedbalsgb6p" path="res://src/unit/Unit.tscn" id="1_uuchs"]
+[ext_resource type="Script" uid="uid://cctirfxakhae" path="res://src/unit/Settler.cs" id="2_r8adb"]
+
+[node name="Unit" instance=ExtResource("1_uuchs")]
+script = ExtResource("2_r8adb")
