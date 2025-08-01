@@ -4,6 +4,7 @@ using System.Linq;
 using de.nodapo.turnbasedstrategygame.civilization;
 using de.nodapo.turnbasedstrategygame.map;
 using de.nodapo.turnbasedstrategygame.terrain;
+using de.nodapo.turnbasedstrategygame.unit;
 using Godot;
 
 namespace de.nodapo.turnbasedstrategygame.city;
@@ -14,8 +15,6 @@ public partial class City : Node2D
     private readonly Random _random = new();
 
     private string? _cityName;
-
-    private Civilization? _civilization;
 
     private Sprite2D? _imageSprite;
 
@@ -31,20 +30,24 @@ public partial class City : Node2D
 
     public int Population { get; private set; } = 1;
 
-    public int PopulationGrowthThreshold { get; set; } = 10;
-    public int PopulationGrowthTracker { get; set; }
+    private int _populationGrowthThreshold = 10;
+
+    private int _populationGrowthTracker;
 
     public int TotalFood { get; private set; }
 
     public int TotalProduction { get; private set; }
 
+    public List<Unit> UnitBuildQueue { get; } = [];
+
+    public Unit? UnitBeingBuilt;
+
+    public int UnitBuildTracker;
+
     public Civilization? Civilization
     {
-        get => _civilization;
         set
         {
-            _civilization = value;
-
             if (value != null)
                 ImageSprite.Modulate = value.TerritoryColor;
         }
@@ -65,13 +68,13 @@ public partial class City : Node2D
 
     public void ProcessEndTurn()
     {
-        PopulationGrowthTracker += TotalFood;
+        _populationGrowthTracker += TotalFood;
 
-        if (PopulationGrowthTracker < PopulationGrowthThreshold) return;
+        if (_populationGrowthTracker < _populationGrowthThreshold) return;
 
         Population++;
-        PopulationGrowthTracker %= PopulationGrowthThreshold;
-        PopulationGrowthThreshold += PopulationThresholdIncrease;
+        _populationGrowthTracker %= _populationGrowthThreshold;
+        _populationGrowthThreshold += PopulationThresholdIncrease;
 
         AddNeighborHexToTerritory();
     }
@@ -120,5 +123,10 @@ public partial class City : Node2D
         if (_populationGrowthHexPool.Count == 0) return;
 
         AddTerritory([_populationGrowthHexPool[_random.Next(_populationGrowthHexPool.Count)]]);
+    }
+
+    public void AddUnitToBuildQueue(Unit unit)
+    {
+        UnitBuildQueue.Add(unit);
     }
 }
