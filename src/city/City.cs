@@ -22,6 +22,14 @@ public partial class City : Node2D
 
     private List<Hex> _populationGrowthHexPool = [];
 
+    private int _populationGrowthThreshold = 10;
+
+    private int _populationGrowthTracker;
+
+    public Unit? UnitBeingBuilt;
+
+    public int UnitBuildTracker;
+
     public HexMap? HexMap { get; set; }
 
     public Vector2I CenterCoordinates { get; set; }
@@ -30,19 +38,11 @@ public partial class City : Node2D
 
     public int Population { get; private set; } = 1;
 
-    private int _populationGrowthThreshold = 10;
-
-    private int _populationGrowthTracker;
-
     public int TotalFood { get; private set; }
 
     public int TotalProduction { get; private set; }
 
     public List<Unit> UnitBuildQueue { get; } = [];
-
-    public Unit? UnitBeingBuilt;
-
-    public int UnitBuildTracker;
 
     public Civilization? Civilization
     {
