@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://bwaumxy18tf0a"]
+
+[ext_resource type="Script" uid="uid://i7oq78tgfihc" path="res://src/unit/UnitBuildButton.cs" id="1_6ugkh"]
+
+[node name="UnitBuildButton" type="Button"]
+text = "UNIT"
+script = ExtResource("1_6ugkh")
