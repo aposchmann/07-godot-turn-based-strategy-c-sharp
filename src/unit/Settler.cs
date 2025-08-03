@@ -6,5 +6,8 @@ public partial class Settler : Unit
     {
         UnitName = "Settler";
         ProductionRequired = 100;
+
+        currentHealth = maxHealth = 1;
+        currentMoves = maxMoves = 2;
     }
 }
