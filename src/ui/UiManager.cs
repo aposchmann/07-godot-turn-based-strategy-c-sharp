@@ -1,6 +1,7 @@
 using de.nodapo.turnbasedstrategygame.city;
 using de.nodapo.turnbasedstrategygame.map;
 using de.nodapo.turnbasedstrategygame.terrain;
+using de.nodapo.turnbasedstrategygame.unit;
 using Godot;
 using static Godot.ResourceLoader;
 
@@ -16,12 +17,17 @@ public partial class UiManager : Node2D
     private TerrainPanel? _terrainPanel;
 
     private PackedScene? _terrainPanelScene;
+    private UnitPanel? _unitPanel;
+    private PackedScene? _unitPanelScene;
 
     private PackedScene TerrainPanelScene => _terrainPanelScene
         ??= Load<PackedScene>("res://src/terrain/TerrainPanel.tscn");
 
     private PackedScene CityPanelScene => _cityPanelScene
         ??= Load<PackedScene>("res://src/city/CityPanel.tscn");
+
+    private PackedScene UnitPanelScene => _unitPanelScene
+        ??= Load<PackedScene>("res://src/unit/UnitPanel.tscn");
 
     private HexMap HexMap => _hexMap ??= GetNode<HexMap>("/root/Game/HexMap");
     private GeneralPanel GeneralPanel => _generalPanel ??= GetNode<GeneralPanel>("GeneralPanel");
@@ -53,6 +59,14 @@ public partial class UiManager : Node2D
             _cityPanel.QueueFree();
             _cityPanel = null;
         }
+
+        if (_unitPanel != null)
+        {
+            RemoveChild(_unitPanel);
+
+            _unitPanel.QueueFree();
+            _unitPanel = null;
+        }
     }
 
     public void ProcessEndTurn()
@@ -60,6 +74,18 @@ public partial class UiManager : Node2D
         HexMap.ProcessEndTurn();
 
         _cityPanel?.Refresh();
+        _unitPanel?.Refresh();
+    }
+
+    public void ShowUnitPanel(Unit unit)
+    {
+        HidePanels();
+
+        _unitPanel = UnitPanelScene.Instantiate<UnitPanel>();
+
+        AddChild(_unitPanel);
+
+        _unitPanel.SetUnit(unit);
     }
 
     private void OnHexSelected(object? _, HexSelectedEventArgs hexSelectedEventArgs)
