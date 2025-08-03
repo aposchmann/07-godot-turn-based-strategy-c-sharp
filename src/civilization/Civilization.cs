@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using de.nodapo.turnbasedstrategygame.city;
+using de.nodapo.turnbasedstrategygame.unit;
 using Godot;
 
 namespace de.nodapo.turnbasedstrategygame.civilization;
@@ -8,6 +9,7 @@ namespace de.nodapo.turnbasedstrategygame.civilization;
 public class Civilization
 {
     public readonly List<City> Cities = [];
+    public readonly List<Unit> Units = [];
     public required int Id;
 
     public required string Name;

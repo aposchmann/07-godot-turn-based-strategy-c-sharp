@@ -44,12 +44,20 @@ public partial class City : Node2D
 
     public List<Unit> UnitBuildQueue { get; } = [];
 
+    private Civilization? _civilization;
+
     public Civilization? Civilization
     {
+        private get => _civilization;
         set
         {
-            if (value != null)
-                ImageSprite.Modulate = value.TerritoryColor;
+            _civilization?.Cities.Remove(this);
+            _civilization = value;
+
+            if (_civilization == null) return;
+
+            _civilization.Cities.Add(this);
+            ImageSprite.Modulate = _civilization.TerritoryColor;
         }
     }
 
@@ -128,5 +136,15 @@ public partial class City : Node2D
     public void AddUnitToBuildQueue(Unit unit)
     {
         UnitBuildQueue.Add(unit);
+    }
+
+    public void SpawnUnit(Unit unit)
+    {
+        if (HexMap == null) return;
+
+        var unitToSpawn = Unit.UnitScenes[unit.GetType()].Instantiate<Unit>();
+
+        unitToSpawn.Position = HexMap.ToLocal(coordinates: CenterCoordinates);
+        unitToSpawn.Civilization = Civilization;
     }
 }
