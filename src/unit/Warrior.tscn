@@ -7,8 +7,5 @@
 [node name="Unit" instance=ExtResource("1_ilm7f")]
 script = ExtResource("2_f4rap")
 
-[node name="Icon" parent="." index="0"]
+[node name="Image" parent="." index="0"]
 texture = ExtResource("2_vxgh2")
-
-[node name="CollisionShape2D" parent="Icon/Area2D" index="0"]
-position = Vector2(-1, -3)

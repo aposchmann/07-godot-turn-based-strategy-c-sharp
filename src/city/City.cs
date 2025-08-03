@@ -78,13 +78,36 @@ public partial class City : Node2D
     {
         _populationGrowthTracker += TotalFood;
 
-        if (_populationGrowthTracker < _populationGrowthThreshold) return;
+        if (_populationGrowthTracker >= _populationGrowthThreshold)
+        {
+            Population++;
 
-        Population++;
-        _populationGrowthTracker %= _populationGrowthThreshold;
-        _populationGrowthThreshold += PopulationThresholdIncrease;
+            _populationGrowthTracker %= _populationGrowthThreshold;
+            _populationGrowthThreshold += PopulationThresholdIncrease;
 
-        AddNeighborHexToTerritory();
+            AddNeighborHexToTerritory();
+        }
+
+        ProcessUnitBuildQueue();
+    }
+
+    private void ProcessUnitBuildQueue()
+    {
+        UnitBuildTracker += TotalProduction;
+
+        while (UnitBuildQueue.Count > 0)
+        {
+            UnitBeingBuilt ??= UnitBuildQueue[0];
+
+            if (UnitBeingBuilt.ProductionRequired > UnitBuildTracker) return;
+
+            SpawnUnit(UnitBeingBuilt);
+
+            UnitBuildTracker -= UnitBeingBuilt.ProductionRequired;
+
+            UnitBuildQueue.RemoveAt(0);
+            UnitBeingBuilt = null;
+        }
     }
 
     public void AddTerritory(List<Hex> hexes)
@@ -138,7 +161,7 @@ public partial class City : Node2D
         UnitBuildQueue.Add(unit);
     }
 
-    public void SpawnUnit(Unit unit)
+    private void SpawnUnit(Unit unit)
     {
         if (HexMap == null) return;
 
@@ -146,5 +169,8 @@ public partial class City : Node2D
 
         unitToSpawn.Position = HexMap.ToLocal(coordinates: CenterCoordinates);
         unitToSpawn.Civilization = Civilization;
+        unitToSpawn.Coordinates = CenterCoordinates;
+
+        HexMap.AddChild(unitToSpawn);
     }
 }

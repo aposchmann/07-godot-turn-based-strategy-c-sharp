@@ -9,12 +9,14 @@ public partial class Unit : Node2D
 {
     public static Dictionary<Type, PackedScene> UnitScenes { get; } = new()
     {
-        { typeof(Settler), GD.Load<PackedScene>("res://unit/Settler.tscn") },
-        { typeof(Warrior), GD.Load<PackedScene>("res://unit/Warrior.tscn") }
+        { typeof(Settler), GD.Load<PackedScene>("res://src/unit/Settler.tscn") },
+        { typeof(Warrior), GD.Load<PackedScene>("res://src/unit/Warrior.tscn") }
     };
 
     public int ProductionRequired { get; protected set; }
     public string UnitName { get; protected set; } = null!;
+
+    public Vector2I Coordinates { get; set; }
 
     public Civilization? Civilization
     {
