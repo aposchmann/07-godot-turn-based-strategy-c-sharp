@@ -11,6 +11,6 @@ public partial class UnitBuildButton : Button
 
     public override void _Ready()
     {
-        Pressed += () => EmitSignalBuildUnit(Unit);
+        Pressed += () => EmitSignal(SignalName.BuildUnit, Unit);
     }
 }

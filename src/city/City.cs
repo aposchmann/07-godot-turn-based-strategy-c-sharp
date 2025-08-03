@@ -26,9 +26,9 @@ public partial class City : Node2D
 
     private int _populationGrowthTracker;
 
-    public Unit? UnitBeingBuilt;
+    public Unit? UnitBeingBuilt { get; set; }
 
-    public int UnitBuildTracker;
+    public int UnitBuildTracker { get; private set; }
 
     public HexMap? HexMap { get; set; }
 

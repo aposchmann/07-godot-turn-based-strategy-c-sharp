@@ -10,9 +10,9 @@ public partial class CityPanel : Panel
     private Label? _nameLabel;
     private Label? _populationLabel;
     private Label? _productionLabel;
+    private VBoxContainer? _queue;
     private UnitBuildButton? _settlerBuildButton;
     private UnitBuildButton? _warriorBuildButton;
-    private VBoxContainer? _queue;
 
     private Label NameLabel => _nameLabel ??= GetNode<Label>("CityName");
     private Label PopulationLabel => _populationLabel ??= GetNode<Label>("Population");
@@ -71,19 +71,15 @@ public partial class CityPanel : Panel
             var unit = _city.UnitBuildQueue[i];
 
             if (i == 0)
-            {
                 Queue.AddChild(new Label
                 {
                     Text = $"{unit.UnitName} {_city?.UnitBuildTracker}/{unit.ProductionRequired}"
                 });
-            }
             else
-            {
                 Queue.AddChild(new Label
                 {
                     Text = $"{unit.UnitName} 0/{unit.ProductionRequired}"
                 });
-            }
         }
     }
 }
