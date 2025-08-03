@@ -51,6 +51,8 @@ public partial class City : Node2D
         private get => _civilization;
         set
         {
+            if (_civilization == value) return;
+            
             _civilization?.Cities.Remove(this);
             _civilization = value;
 
