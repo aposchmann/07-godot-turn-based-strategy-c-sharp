@@ -7,7 +7,7 @@ public partial class Warrior : Unit
         UnitName = "Warrior";
         ProductionRequired = 50;
 
-        currentHealth = maxHealth = 3;
-        currentMoves = maxMoves = 1;
+        CurrentHealth = MaxHealth = 3;
+        CurrentMoves = MaxMoves = 1;
     }
 }

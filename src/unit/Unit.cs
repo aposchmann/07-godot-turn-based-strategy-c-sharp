@@ -17,6 +17,12 @@ public partial class Unit : Node2D
         { typeof(Warrior), GD.Load<PackedScene>("res://src/unit/Warrior.tscn") }
     };
 
+    public static IReadOnlyDictionary<Type, Texture2D> UnitTextures { get; } = new Dictionary<Type, Texture2D>
+    {
+        { typeof(Settler), GD.Load<Texture2D>("res://textures/unit/settler_image.png") },
+        { typeof(Warrior), GD.Load<Texture2D>("res://textures/unit/warrior_image.png") }
+    };
+
     public int ProductionRequired { get; protected set; }
     public string UnitName { get; protected set; } = null!;
 
@@ -38,10 +44,10 @@ public partial class Unit : Node2D
         }
     }
 
-    public int maxHealth { get; set; }
-    public int currentHealth { get; protected set; }
-    public int maxMoves { get; set; }
-    public int currentMoves { get; protected set; }
+    public int MaxHealth { get; protected set; }
+    public int CurrentHealth { get; protected set; }
+    public int MaxMoves { get; protected set; }
+    public int CurrentMoves { get; protected set; }
 
     private Sprite2D ImageSprite => _imageSprite ??= GetNode<Sprite2D>("Image");
 }

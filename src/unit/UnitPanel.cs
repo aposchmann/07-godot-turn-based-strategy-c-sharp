@@ -15,7 +15,7 @@ public partial class UnitPanel : Panel
     private Label HealthLabel => _healthLabel ??= GetNode<Label>("UnitHealth");
     private Label MovesLabel => _movesLabel ??= GetNode<Label>("UnitMoves");
 
-    public void setUnit(Unit unit)
+    public void SetUnit(Unit unit)
     {
         _unit = unit;
 
@@ -24,5 +24,11 @@ public partial class UnitPanel : Panel
 
     public void Refresh()
     {
+        if (_unit == null) return;
+
+        UnitImage.Texture = Unit.UnitTextures[_unit.GetType()];
+        TypeLabel.Text = $"Unit Type: {_unit.UnitName}";
+        HealthLabel.Text = $"Health: {_unit.CurrentHealth}/{_unit.MaxHealth}";
+        MovesLabel.Text = $"Moves: {_unit.CurrentMoves}/{_unit.MaxMoves}";
     }
 }

@@ -27,6 +27,7 @@ offset_bottom = 193.0
 text = "Unit Type: "
 
 [node name="UnitHealth" type="Label" parent="."]
+layout_mode = 0
 offset_left = 10.0
 offset_top = 200.0
 offset_right = 240.0
@@ -34,6 +35,7 @@ offset_bottom = 223.0
 text = "Health: "
 
 [node name="UnitMoves" type="Label" parent="."]
+layout_mode = 0
 offset_left = 10.0
 offset_top = 230.0
 offset_right = 240.0
@@ -41,6 +43,7 @@ offset_bottom = 253.0
 text = "Moves:"
 
 [node name="UnitActions" type="Label" parent="."]
+layout_mode = 0
 offset_left = 10.0
 offset_top = 270.0
 offset_right = 240.0

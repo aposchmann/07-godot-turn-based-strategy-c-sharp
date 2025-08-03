@@ -13,7 +13,7 @@ public partial class TerrainPanel : Panel
     private TextureRect? _terrainImage;
     private Label? _terrainLabel;
 
-    private static Dictionary<Terrain, Texture2D> TerrainTextures { get; } = new()
+    private static IReadOnlyDictionary<Terrain, Texture2D> TerrainTextures { get; } = new Dictionary<Terrain, Texture2D>
     {
         { Plains, Load<Texture2D>("res://textures/terrain/plains.jpg") },
         { Beach, Load<Texture2D>("res://textures/terrain/beach.jpg") },
