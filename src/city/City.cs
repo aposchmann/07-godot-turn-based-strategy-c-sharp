@@ -16,6 +16,8 @@ public partial class City : Node2D
 
     private string? _cityName;
 
+    private Civilization? _civilization;
+
     private Sprite2D? _imageSprite;
 
     private Label? _nameLabel;
@@ -44,15 +46,13 @@ public partial class City : Node2D
 
     public List<Unit> UnitBuildQueue { get; } = [];
 
-    private Civilization? _civilization;
-
     public Civilization? Civilization
     {
         private get => _civilization;
         set
         {
             if (_civilization == value) return;
-            
+
             _civilization?.Cities.Remove(this);
             _civilization = value;
 
@@ -169,7 +169,7 @@ public partial class City : Node2D
 
         var unitToSpawn = Unit.UnitScenes[unit.GetType()].Instantiate<Unit>();
 
-        unitToSpawn.Position = HexMap.ToLocal(coordinates: CenterCoordinates);
+        unitToSpawn.Position = HexMap.ToLocal(CenterCoordinates);
         unitToSpawn.Civilization = Civilization;
         unitToSpawn.Coordinates = CenterCoordinates;
 

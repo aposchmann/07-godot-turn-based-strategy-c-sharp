@@ -6,5 +6,8 @@ public partial class Warrior : Unit
     {
         UnitName = "Warrior";
         ProductionRequired = 50;
+
+        CurrentHealth = MaxHealth = 3;
+        CurrentMoves = MaxMoves = 1;
     }
 }
