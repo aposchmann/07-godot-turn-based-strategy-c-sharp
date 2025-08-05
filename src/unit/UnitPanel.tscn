@@ -15,7 +15,6 @@ script = ExtResource("1_x4kxm")
 layout_mode = 0
 offset_right = 250.0
 offset_bottom = 160.0
-texture = ExtResource("1_sstp3")
 expand_mode = 1
 
 [node name="UnitType" type="Label" parent="."]
@@ -53,5 +52,7 @@ label_settings = SubResource("LabelSettings_sstp3")
 
 [node name="UnitActionList" type="VBoxContainer" parent="."]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 10.0
+offset_top = 300.0
+offset_right = 240.0
+offset_bottom = 390.0
