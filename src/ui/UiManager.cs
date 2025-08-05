@@ -77,9 +77,9 @@ public partial class UiManager : Node2D
         _unitPanel?.Refresh();
     }
 
-    public void ShowUnitPanel(Unit unit)
+    public void OnUnitSelected(Unit unit)
     {
-        HidePanels();
+        HexMap.DeselectHex();
 
         _unitPanel = UnitPanelScene.Instantiate<UnitPanel>();
 

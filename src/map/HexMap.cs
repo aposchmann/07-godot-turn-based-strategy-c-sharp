@@ -396,7 +396,7 @@ public partial class HexMap : Node2D
         _selectedHex = hexPosition;
     }
 
-    private void DeselectHex()
+    public void DeselectHex()
     {
         if (_selectedHex is not { } selectedHex) return;
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using de.nodapo.turnbasedstrategygame.civilization;
+using de.nodapo.turnbasedstrategygame.ui;
 using Godot;
 using static Godot.MouseButtonMask;
 
@@ -9,11 +10,12 @@ namespace de.nodapo.turnbasedstrategygame.unit;
 public partial class Unit : Node2D
 {
     private Civilization? _civilization;
-
     private Sprite2D? _image;
     private Area2D? _imageArea;
 
     private bool _isSelected;
+
+    private UiManager? _uiManager;
 
     public static IReadOnlyDictionary<Type, PackedScene> UnitScenes { get; } = new Dictionary<Type, PackedScene>
     {
@@ -66,9 +68,12 @@ public partial class Unit : Node2D
             {
                 V = Image.Modulate.V + (_isSelected ? -0.25f : 0.25f)
             };
+
+            if (_isSelected) UiManager.OnUnitSelected(this);
         }
     }
 
+    private UiManager UiManager => _uiManager ??= GetNode<UiManager>("/root/Game/CanvasLayer/UiManager");
     private Sprite2D Image => _image ??= GetNode<Sprite2D>("Image");
     private Area2D ImageArea => _imageArea ??= GetNode<Area2D>("Image/Area");
 
