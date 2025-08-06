@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using de.nodapo.turnbasedstrategygame.civilization;
+using de.nodapo.turnbasedstrategygame.map;
+using de.nodapo.turnbasedstrategygame.terrain;
 using de.nodapo.turnbasedstrategygame.ui;
 using Godot;
 using static Godot.MouseButtonMask;
@@ -10,6 +13,8 @@ namespace de.nodapo.turnbasedstrategygame.unit;
 public partial class Unit : Node2D
 {
     private Civilization? _civilization;
+
+    private HexMap? _hexMap;
     private Sprite2D? _image;
     private Area2D? _imageArea;
 
@@ -29,10 +34,16 @@ public partial class Unit : Node2D
         { typeof(Warrior), GD.Load<Texture2D>("res://textures/unit/warrior_image.jpg") }
     };
 
+    private static IReadOnlySet<Terrain> ImpassibleTerrain { get; } = new HashSet<Terrain>
+    {
+        Terrain.Coast, Terrain.Ice, Terrain.Mountain, Terrain.Water
+    };
+
     public int ProductionRequired { get; protected set; }
     public string UnitName { get; protected set; } = null!;
 
     public Vector2I Coordinates { get; set; }
+    private HexMap HexMap => _hexMap ??= GetNode<HexMap>("/root/Game/HexMap");
 
     public Civilization? Civilization
     {
@@ -55,6 +66,8 @@ public partial class Unit : Node2D
     public int MaxMoves { get; protected set; }
     public int CurrentMoves { get; protected set; }
 
+    private List<Hex> _validMovementHexes = [];
+
     private bool IsSelected
     {
         get => _isSelected;
@@ -69,7 +82,16 @@ public partial class Unit : Node2D
                 V = Image.Modulate.V + (_isSelected ? -0.25f : 0.25f)
             };
 
-            if (_isSelected) UiManager.OnUnitSelected(this);
+            if (_isSelected)
+            {
+                UiManager.OnUnitSelected(this);
+
+                _validMovementHexes = CalculateValidMovementHexes();
+            }
+            else
+            {
+                _validMovementHexes = [];
+            }
         }
     }
 
@@ -96,5 +118,10 @@ public partial class Unit : Node2D
         {
             IsSelected = false;
         }
+    }
+
+    public List<Hex> CalculateValidMovementHexes()
+    {
+        return HexMap.GetSurroundingHexes(Coordinates).Where(hex => !ImpassibleTerrain.Contains(hex.Terrain)).ToList();
     }
 }

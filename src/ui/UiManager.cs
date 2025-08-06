@@ -80,7 +80,7 @@ public partial class UiManager : Node2D
     public void OnUnitSelected(Unit unit)
     {
         HidePanels();
-        
+
         HexMap.DeselectHex();
 
         _unitPanel = UnitPanelScene.Instantiate<UnitPanel>();
