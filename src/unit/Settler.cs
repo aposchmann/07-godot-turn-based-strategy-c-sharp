@@ -10,4 +10,9 @@ public partial class Settler : Unit
         CurrentHealth = MaxHealth = 1;
         CurrentMoves = MaxMoves = 2;
     }
+
+    public override void _Ready()
+    {
+        base._Ready();
+    }
 }

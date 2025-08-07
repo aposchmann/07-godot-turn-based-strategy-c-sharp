@@ -1,6 +1,5 @@
-[gd_scene load_steps=4 format=3 uid="uid://5s0gq5gvydsv"]
+[gd_scene load_steps=3 format=3 uid="uid://5s0gq5gvydsv"]
 
-[ext_resource type="Texture2D" uid="uid://bpnynk5b3j7l0" path="res://textures/unit/settler_image.png" id="1_sstp3"]
 [ext_resource type="Script" uid="uid://bfxbrnr1pfunf" path="res://src/unit/UnitPanel.cs" id="1_x4kxm"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_sstp3"]

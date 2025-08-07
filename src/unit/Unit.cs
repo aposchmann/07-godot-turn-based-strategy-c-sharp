@@ -66,8 +66,6 @@ public partial class Unit : Node2D
     public int MaxMoves { get; protected set; }
     public int CurrentMoves { get; protected set; }
 
-    private List<Hex> _validMovementHexes = [];
-
     private bool IsSelected
     {
         get => _isSelected;
@@ -85,12 +83,6 @@ public partial class Unit : Node2D
             if (_isSelected)
             {
                 UiManager.OnUnitSelected(this);
-
-                _validMovementHexes = CalculateValidMovementHexes();
-            }
-            else
-            {
-                _validMovementHexes = [];
             }
         }
     }
@@ -120,8 +112,53 @@ public partial class Unit : Node2D
         }
     }
 
-    public List<Hex> CalculateValidMovementHexes()
+    private List<Hex> CalculateValidMovementHexes()
     {
         return HexMap.GetSurroundingHexes(Coordinates).Where(hex => !ImpassibleTerrain.Contains(hex.Terrain)).ToList();
+    }
+
+    private static readonly Dictionary<Hex, List<Unit>> UnitLocations = [];
+
+    public override void _Ready()
+    {
+        CurrentUnitLocations.Add(this);
+
+        HexMap.HexRightClicked += (_, hexRightClickedEventArgs) => Move(hexRightClickedEventArgs.Hex);
+    }
+
+    private void Move(Hex hex)
+    {
+        if (!IsSelected) return;
+        if (CurrentMoves < 1) return;
+        if (!CalculateValidMovementHexes().Contains(hex)) return;
+        if (GetUnitLocationsAt(hex).Count > 0) return;
+
+        CurrentUnitLocations.Remove(this);
+
+        Coordinates = hex.Coordinates;
+
+        Position = HexMap.ToLocal(Coordinates);
+
+        CurrentUnitLocations.Add(this);
+
+        CurrentMoves--;
+
+        UiManager.OnUnitSelected(this);
+    }
+
+    private static List<Unit> GetUnitLocationsAt(Hex hex)
+    {
+        var unitList = UnitLocations.GetValueOrDefault(hex, []);
+
+        UnitLocations[hex] = unitList;
+
+        return unitList;
+    }
+
+    private List<Unit> CurrentUnitLocations => GetUnitLocationsAt(HexMap.GetHex(Coordinates));
+
+    public void ProcessEndTurn()
+    {
+        CurrentMoves = MaxMoves;
     }
 }

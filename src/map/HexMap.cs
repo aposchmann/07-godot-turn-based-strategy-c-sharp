@@ -55,6 +55,7 @@ public partial class HexMap : Node2D
     private PackedScene CityScene => _cityScene ??= ResourceLoader.Load<PackedScene>("res://src/city/City.tscn");
 
     public event EventHandler<HexSelectedEventArgs>? HexSelected;
+    public event EventHandler<HexRightClickedEventArgs>? HexRightClicked;
 
     public override void _Ready()
     {
@@ -70,6 +71,7 @@ public partial class HexMap : Node2D
     public void ProcessEndTurn()
     {
         _civilizations.ForEach(civilization => civilization.Cities.ForEach(city => city.ProcessEndTurn()));
+        _civilizations.ForEach(civilization => civilization.Units.ForEach(unit => unit.ProcessEndTurn()));
         _civilizations.ForEach(UpdateCivilizationTerritory);
     }
 
@@ -372,21 +374,33 @@ public partial class HexMap : Node2D
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event is not InputEventMouseButton { ButtonMask: Left }) return;
+        var mousePosition = OverlayLayer.LocalToMap(ToLocal(GetGlobalMousePosition()));
 
-        var clickedPosition = OverlayLayer.LocalToMap(ToLocal(GetGlobalMousePosition()));
+        switch (@event)
+        {
+            case InputEventMouseButton { ButtonMask: Left }:
+            {
+                if (mousePosition == _selectedHex) return;
 
-        if (clickedPosition == _selectedHex) return;
+                DeselectHex();
 
-        DeselectHex();
+                if (!_hexes.TryGetValue(mousePosition, out var clickedHex)) return;
 
-        if (!_hexes.TryGetValue(clickedPosition, out var clickedHex)) return;
+                SelectHex(mousePosition);
 
-        SelectHex(clickedPosition);
+                HexSelected?.Invoke(this, new HexSelectedEventArgs { Hex = clickedHex });
 
-        GD.Print(clickedHex);
+                break;
+            }
+            case InputEventMouseButton { ButtonMask: Right }:
+            {
+                if (!_hexes.TryGetValue(mousePosition, out var clickedHex)) return;
 
-        HexSelected?.Invoke(this, new HexSelectedEventArgs { Hex = clickedHex });
+                HexRightClicked?.Invoke(this, new HexRightClickedEventArgs { Hex = clickedHex });
+
+                break;
+            }
+        }
     }
 
     private void SelectHex(Vector2I hexPosition)
@@ -405,5 +419,10 @@ public partial class HexMap : Node2D
         _selectedHex = null;
 
         EmitSignal(SignalName.HexDeselected);
+    }
+
+    public Hex GetHex(Vector2I coordinates)
+    {
+        return _hexes[coordinates];
     }
 }
