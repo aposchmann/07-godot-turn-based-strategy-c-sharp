@@ -44,10 +44,11 @@ public partial class Unit : Node2D
     public string UnitName { get; protected set; } = null!;
 
     public Vector2I Coordinates { get; set; }
-    private HexMap HexMap => _hexMap ??= GetNode<HexMap>("/root/Game/HexMap");
+    protected HexMap HexMap => _hexMap ??= GetNode<HexMap>("/root/Game/HexMap");
 
     public Civilization? Civilization
     {
+        protected get => _civilization;
         set
         {
             if (_civilization == value) return;
@@ -91,6 +92,8 @@ public partial class Unit : Node2D
 
     private List<Unit> CurrentUnitLocations => GetUnitLocationsAt(HexMap.GetHex(Coordinates));
 
+    private void OnHexRightClicked(object? _, HexRightClickedEventArgs eventArgs) => Move(eventArgs.Hex);
+
     public override void _UnhandledInput(InputEvent @event)
     {
         if (@event is not InputEventMouseButton { ButtonMask: Left }) return;
@@ -121,7 +124,7 @@ public partial class Unit : Node2D
     {
         CurrentUnitLocations.Add(this);
 
-        HexMap.HexRightClicked += (_, hexRightClickedEventArgs) => Move(hexRightClickedEventArgs.Hex);
+        HexMap.HexRightClicked += OnHexRightClicked;
     }
 
     private void Move(Hex hex)
@@ -156,5 +159,18 @@ public partial class Unit : Node2D
     public void ProcessEndTurn()
     {
         CurrentMoves = MaxMoves;
+    }
+
+    protected void DestroyUnit()
+    {
+        IsSelected = false;
+
+        HexMap.HexRightClicked -= OnHexRightClicked;
+
+        Civilization?.Units.Remove(this);
+
+        GetUnitLocationsAt(HexMap.GetHex(Coordinates)).Remove(this);
+
+        QueueFree();
     }
 }

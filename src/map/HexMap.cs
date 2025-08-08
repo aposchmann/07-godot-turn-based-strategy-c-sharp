@@ -191,7 +191,7 @@ public partial class HexMap : Node2D
         _civilizations.Add(civilization);
     }
 
-    private void CreateCity(Civilization civilization, Vector2I coordinates, string name)
+    public void CreateCity(Civilization civilization, Vector2I coordinates, string name)
     {
         var city = CityScene.Instantiate<City>();
 
@@ -202,8 +202,6 @@ public partial class HexMap : Node2D
         city.AddTerritory([_hexes[coordinates]]);
         city.AddTerritory(GetSurroundingHexes(coordinates));
         city.CityName = name;
-
-        civilization.Cities.Add(city);
 
         AddChild(city);
 

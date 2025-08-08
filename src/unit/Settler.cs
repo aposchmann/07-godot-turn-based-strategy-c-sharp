@@ -10,4 +10,18 @@ public partial class Settler : Unit
         CurrentHealth = MaxHealth = 1;
         CurrentMoves = MaxMoves = 2;
     }
+
+    public void FoundCity()
+    {
+        if (Civilization is null) return;
+        if (HexMap.GetHex(Coordinates).OwnerCity is not null) return;
+
+        foreach (var hex in HexMap.GetSurroundingHexes(Coordinates))
+            if (hex.OwnerCity is not null)
+                return;
+
+        HexMap.CreateCity(Civilization, Coordinates, $"City {Coordinates}");
+
+        DestroyUnit();
+    }
 }
