@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using de.nodapo.turnbasedstrategygame.civilization;
+using de.nodapo.turnbasedstrategygame.map;
+using de.nodapo.turnbasedstrategygame.terrain;
 using de.nodapo.turnbasedstrategygame.ui;
 using Godot;
 using static Godot.MouseButtonMask;
@@ -9,7 +12,10 @@ namespace de.nodapo.turnbasedstrategygame.unit;
 
 public partial class Unit : Node2D
 {
+    private static readonly Dictionary<Hex, List<Unit>> UnitLocations = [];
     private Civilization? _civilization;
+
+    private HexMap? _hexMap;
     private Sprite2D? _image;
     private Area2D? _imageArea;
 
@@ -29,10 +35,16 @@ public partial class Unit : Node2D
         { typeof(Warrior), GD.Load<Texture2D>("res://textures/unit/warrior_image.jpg") }
     };
 
+    private static IReadOnlySet<Terrain> ImpassibleTerrain { get; } = new HashSet<Terrain>
+    {
+        Terrain.Coast, Terrain.Ice, Terrain.Mountain, Terrain.Water
+    };
+
     public int ProductionRequired { get; protected set; }
     public string UnitName { get; protected set; } = null!;
 
     public Vector2I Coordinates { get; set; }
+    private HexMap HexMap => _hexMap ??= GetNode<HexMap>("/root/Game/HexMap");
 
     public Civilization? Civilization
     {
@@ -77,6 +89,8 @@ public partial class Unit : Node2D
     private Sprite2D Image => _image ??= GetNode<Sprite2D>("Image");
     private Area2D ImageArea => _imageArea ??= GetNode<Area2D>("Image/Area");
 
+    private List<Unit> CurrentUnitLocations => GetUnitLocationsAt(HexMap.GetHex(Coordinates));
+
     public override void _UnhandledInput(InputEvent @event)
     {
         if (@event is not InputEventMouseButton { ButtonMask: Left }) return;
@@ -96,5 +110,51 @@ public partial class Unit : Node2D
         {
             IsSelected = false;
         }
+    }
+
+    private List<Hex> CalculateValidMovementHexes()
+    {
+        return HexMap.GetSurroundingHexes(Coordinates).Where(hex => !ImpassibleTerrain.Contains(hex.Terrain)).ToList();
+    }
+
+    public override void _Ready()
+    {
+        CurrentUnitLocations.Add(this);
+
+        HexMap.HexRightClicked += (_, hexRightClickedEventArgs) => Move(hexRightClickedEventArgs.Hex);
+    }
+
+    private void Move(Hex hex)
+    {
+        if (!IsSelected) return;
+        if (CurrentMoves < 1) return;
+        if (!CalculateValidMovementHexes().Contains(hex)) return;
+        if (GetUnitLocationsAt(hex).Count > 0) return;
+
+        CurrentUnitLocations.Remove(this);
+
+        Coordinates = hex.Coordinates;
+
+        Position = HexMap.ToLocal(Coordinates);
+
+        CurrentUnitLocations.Add(this);
+
+        CurrentMoves--;
+
+        UiManager.OnUnitSelected(this);
+    }
+
+    private static List<Unit> GetUnitLocationsAt(Hex hex)
+    {
+        var unitList = UnitLocations.GetValueOrDefault(hex, []);
+
+        UnitLocations[hex] = unitList;
+
+        return unitList;
+    }
+
+    public void ProcessEndTurn()
+    {
+        CurrentMoves = MaxMoves;
     }
 }
