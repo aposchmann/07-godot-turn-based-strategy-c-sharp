@@ -9,7 +9,7 @@ using Godot;
 using static de.nodapo.turnbasedstrategygame.terrain.Terrain;
 using static Godot.FastNoiseLite.FractalTypeEnum;
 using static Godot.FastNoiseLite.NoiseTypeEnum;
-using static Godot.MouseButtonMask;
+using static Godot.MouseButton;
 
 namespace de.nodapo.turnbasedstrategygame.map;
 
@@ -374,11 +374,11 @@ public partial class HexMap : Node2D
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        var mousePosition = OverlayLayer.LocalToMap(ToLocal(GetGlobalMousePosition()));
+        var mousePosition = OverlayLayer.LocalToMap(OverlayLayer.ToLocal(GetGlobalMousePosition()));
 
         switch (@event)
         {
-            case InputEventMouseButton { ButtonMask: Left }:
+            case InputEventMouseButton { ButtonIndex: Left, Pressed: true }:
             {
                 if (mousePosition == _selectedHex) return;
 
@@ -392,7 +392,7 @@ public partial class HexMap : Node2D
 
                 break;
             }
-            case InputEventMouseButton { ButtonMask: Right }:
+            case InputEventMouseButton { ButtonIndex: Right, Pressed: true }:
             {
                 if (!_hexes.TryGetValue(mousePosition, out var clickedHex)) return;
 

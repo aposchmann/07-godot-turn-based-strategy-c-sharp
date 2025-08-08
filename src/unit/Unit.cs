@@ -12,6 +12,7 @@ namespace de.nodapo.turnbasedstrategygame.unit;
 
 public partial class Unit : Node2D
 {
+    private static readonly Dictionary<Hex, List<Unit>> UnitLocations = [];
     private Civilization? _civilization;
 
     private HexMap? _hexMap;
@@ -80,16 +81,15 @@ public partial class Unit : Node2D
                 V = Image.Modulate.V + (_isSelected ? -0.25f : 0.25f)
             };
 
-            if (_isSelected)
-            {
-                UiManager.OnUnitSelected(this);
-            }
+            if (_isSelected) UiManager.OnUnitSelected(this);
         }
     }
 
     private UiManager UiManager => _uiManager ??= GetNode<UiManager>("/root/Game/CanvasLayer/UiManager");
     private Sprite2D Image => _image ??= GetNode<Sprite2D>("Image");
     private Area2D ImageArea => _imageArea ??= GetNode<Area2D>("Image/Area");
+
+    private List<Unit> CurrentUnitLocations => GetUnitLocationsAt(HexMap.GetHex(Coordinates));
 
     public override void _UnhandledInput(InputEvent @event)
     {
@@ -116,8 +116,6 @@ public partial class Unit : Node2D
     {
         return HexMap.GetSurroundingHexes(Coordinates).Where(hex => !ImpassibleTerrain.Contains(hex.Terrain)).ToList();
     }
-
-    private static readonly Dictionary<Hex, List<Unit>> UnitLocations = [];
 
     public override void _Ready()
     {
@@ -154,8 +152,6 @@ public partial class Unit : Node2D
 
         return unitList;
     }
-
-    private List<Unit> CurrentUnitLocations => GetUnitLocationsAt(HexMap.GetHex(Coordinates));
 
     public void ProcessEndTurn()
     {
