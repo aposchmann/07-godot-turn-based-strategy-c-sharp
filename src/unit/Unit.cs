@@ -67,7 +67,7 @@ public partial class Unit : Node2D
     public int CurrentHealth { get; protected set; }
     public int MaxMoves { get; protected set; }
     public int CurrentMoves { get; protected set; }
-    public int AttackValue { get; protected set; }
+    protected int AttackValue { get; set; }
 
     private bool IsSelected
     {
@@ -144,7 +144,7 @@ public partial class Unit : Node2D
         UiManager.OnUnitSelected(this);
     }
 
-    private void Move(Hex hex)
+    protected virtual void Move(Hex hex)
     {
         if (CurrentMoves < 1) return;
         if (!CalculateValidMovementHexes().Contains(hex)) return;

@@ -199,22 +199,20 @@ public partial class HexMap : Node2D
         var city = CityScene.Instantiate<City>();
 
         city.HexMap = this;
-        city.Civilization = civilization;
         city.CenterCoordinates = coordinates;
         city.Position = ToLocal(coordinates);
         city.AddTerritory([_hexes[coordinates]]);
         city.AddTerritory(GetSurroundingHexes(coordinates));
         city.CityName = name;
+        city.Civilization = civilization;
 
         AddChild(city);
 
         _hexes[coordinates].IsCityCenter = true;
         _cities[coordinates] = city;
-
-        UpdateCivilizationTerritory(civilization);
     }
 
-    private void UpdateCivilizationTerritory(Civilization civilization)
+    public void UpdateCivilizationTerritory(Civilization civilization)
     {
         foreach (var hex in from city in civilization.Cities from hex in city.Territory select hex)
             CivilizationColorLayer.SetCell(hex.Coordinates, 0, CivilizationColorBase, civilization.TerritoryColorId);
