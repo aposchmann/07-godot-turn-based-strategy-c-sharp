@@ -155,7 +155,6 @@ public partial class HexMap : Node2D
     {
         var civilization = new Civilization
         {
-            Id = 0,
             Name = "Player",
             PlayerCivilization = true,
             TerritoryColor = PlayerColor
@@ -170,7 +169,6 @@ public partial class HexMap : Node2D
         {
             var civilization = new Civilization
             {
-                Id = i,
                 Name = $"Civilization {i}",
                 PlayerCivilization = false
             };

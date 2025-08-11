@@ -8,9 +8,10 @@ namespace de.nodapo.turnbasedstrategygame.civilization;
 
 public class Civilization
 {
+    private static readonly Random Random = new();
+
     public readonly List<City> Cities = [];
     public readonly List<Unit> Units = [];
-    public required int Id;
 
     public required string Name;
 
@@ -24,9 +25,7 @@ public class Civilization
 
     public void SetRandomColor()
     {
-        var random = new Random();
-
-        TerritoryColor = new Color(random.NextSingle(), random.NextSingle(), random.NextSingle());
+        TerritoryColor = new Color(Random.NextSingle(), Random.NextSingle(), Random.NextSingle());
     }
 
     public void ProcessEndTurn()
@@ -36,11 +35,9 @@ public class Civilization
 
         if (PlayerCivilization) return;
 
-        var random = new Random();
-
         Cities.ForEach(city =>
         {
-            var unitQueueChance = random.Next(30);
+            var unitQueueChance = Random.Next(30);
 
             if (unitQueueChance > 27)
             {
@@ -53,13 +50,13 @@ public class Civilization
             }
         });
 
-        for (var i = 0; i < Units.Count; i++)
+        for (var i = Units.Count - 1; i >= 0; i--)
         {
             var unit = Units[i];
 
             unit.RandomMove();
 
-            if (unit is Settler settler && random.Next(10) > 8)
+            if (unit is Settler settler && Random.Next(10) > 8)
             {
                 settler.FoundCity();
             }

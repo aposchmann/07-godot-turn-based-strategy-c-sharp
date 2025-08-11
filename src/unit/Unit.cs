@@ -203,12 +203,14 @@ public partial class Unit : Node2D
 
     public void RandomMove()
     {
-        Move(CalculateValidMovementHexes()
-            .ElementAt(new Random()
-                .Next(CalculateValidMovementHexes().Count)));
+        var validMovementHexes = CalculateValidMovementHexes();
+
+        if (validMovementHexes.Count == 0) return;
+
+        Move(validMovementHexes.ElementAt(new Random().Next(CalculateValidMovementHexes().Count)));
     }
 
-    public void CalculateCombat(Unit attacker, Unit defender)
+    private static void CalculateCombat(Unit attacker, Unit defender)
     {
         defender.CurrentHealth -= attacker.AttackValue;
         attacker.CurrentHealth -= defender.AttackValue / 2;
