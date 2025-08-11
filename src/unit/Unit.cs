@@ -92,7 +92,7 @@ public partial class Unit : Node2D
 
     private List<Unit> CurrentUnitLocations => GetUnitLocationsAt(HexMap.GetHex(Coordinates));
 
-    private void OnHexRightClicked(object? _, HexRightClickedEventArgs eventArgs) => Move(eventArgs.Hex);
+    private void OnHexRightClicked(object? _, HexRightClickedEventArgs eventArgs) => ManualMove(eventArgs.Hex);
 
     public override void _UnhandledInput(InputEvent @event)
     {
@@ -127,9 +127,17 @@ public partial class Unit : Node2D
         HexMap.HexRightClicked += OnHexRightClicked;
     }
 
-    private void Move(Hex hex)
+    private void ManualMove(Hex hex)
     {
         if (!IsSelected) return;
+
+        Move(hex);
+
+        UiManager.OnUnitSelected(this);
+    }
+
+    private void Move(Hex hex)
+    {
         if (CurrentMoves < 1) return;
         if (!CalculateValidMovementHexes().Contains(hex)) return;
         if (GetUnitLocationsAt(hex).Count > 0) return;
@@ -143,8 +151,6 @@ public partial class Unit : Node2D
         CurrentUnitLocations.Add(this);
 
         CurrentMoves--;
-
-        UiManager.OnUnitSelected(this);
     }
 
     private static List<Unit> GetUnitLocationsAt(Hex hex)
@@ -172,5 +178,12 @@ public partial class Unit : Node2D
         GetUnitLocationsAt(HexMap.GetHex(Coordinates)).Remove(this);
 
         QueueFree();
+    }
+
+    public void RandomMove()
+    {
+        Move(CalculateValidMovementHexes()
+            .ElementAt(new Random()
+                .Next(CalculateValidMovementHexes().Count)));
     }
 }

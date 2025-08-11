@@ -70,9 +70,12 @@ public partial class HexMap : Node2D
 
     public void ProcessEndTurn()
     {
-        _civilizations.ForEach(civilization => civilization.Cities.ForEach(city => city.ProcessEndTurn()));
-        _civilizations.ForEach(civilization => civilization.Units.ForEach(unit => unit.ProcessEndTurn()));
-        _civilizations.ForEach(UpdateCivilizationTerritory);
+        _civilizations.ForEach(civilization =>
+        {
+            civilization.ProcessEndTurn();
+
+            UpdateCivilizationTerritory(civilization);
+        });
     }
 
     private void GenerateResources()
