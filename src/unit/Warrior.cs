@@ -9,5 +9,7 @@ public partial class Warrior : Unit
 
         CurrentHealth = MaxHealth = 3;
         CurrentMoves = MaxMoves = 1;
+
+        AttackValue = 2;
     }
 }

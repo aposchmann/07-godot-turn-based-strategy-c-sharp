@@ -53,8 +53,10 @@ public class Civilization
             }
         });
 
-        foreach (var unit in Units)
+        for (var i = 0; i < Units.Count; i++)
         {
+            var unit = Units[i];
+
             unit.RandomMove();
 
             if (unit is Settler settler && random.Next(10) > 8)
