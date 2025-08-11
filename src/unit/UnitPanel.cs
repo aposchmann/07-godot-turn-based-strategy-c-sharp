@@ -4,6 +4,7 @@ namespace de.nodapo.turnbasedstrategygame.unit;
 
 public partial class UnitPanel : Panel
 {
+    private VBoxContainer? _actionList;
     private Label? _healthLabel;
     private Label? _movesLabel;
     private Label? _typeLabel;
@@ -14,10 +15,23 @@ public partial class UnitPanel : Panel
     private Label TypeLabel => _typeLabel ??= GetNode<Label>("UnitType");
     private Label HealthLabel => _healthLabel ??= GetNode<Label>("UnitHealth");
     private Label MovesLabel => _movesLabel ??= GetNode<Label>("UnitMoves");
+    private VBoxContainer ActionList => _actionList ??= GetNode<VBoxContainer>("UnitActionList");
 
     public void SetUnit(Unit unit)
     {
         _unit = unit;
+
+        if (unit.GetType() == typeof(Settler))
+        {
+            var foundCityButton = new Button
+            {
+                Text = "Found City"
+            };
+
+            ActionList.AddChild(foundCityButton);
+
+            foundCityButton.Pressed += ((Settler)unit).FoundCity;
+        }
 
         Refresh();
     }
