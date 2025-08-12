@@ -36,10 +36,10 @@ public partial class HexMap : Node2D
 
     private Vector2I? _selectedHex;
 
-    [Export] public int Height = 40;
+    [Export] public int Height = 20;
     [Export] public int MaxNumberOfAiCivilizations = 6;
     [Export] public Color PlayerColor = Colors.HotPink;
-    [Export] public int Width = 60;
+    [Export] public int Width = 30;
 
     private TileMapLayer BaseLayer => _baseLayer ??= GetNode<TileMapLayer>("BaseLayer");
     private TileMapLayer BorderLayer => _borderLayer ??= GetNode<TileMapLayer>("BorderLayer");
@@ -70,9 +70,12 @@ public partial class HexMap : Node2D
 
     public void ProcessEndTurn()
     {
-        _civilizations.ForEach(civilization => civilization.Cities.ForEach(city => city.ProcessEndTurn()));
-        _civilizations.ForEach(civilization => civilization.Units.ForEach(unit => unit.ProcessEndTurn()));
-        _civilizations.ForEach(UpdateCivilizationTerritory);
+        _civilizations.ForEach(civilization =>
+        {
+            civilization.ProcessEndTurn();
+
+            UpdateCivilizationTerritory(civilization);
+        });
     }
 
     private void GenerateResources()
@@ -152,7 +155,6 @@ public partial class HexMap : Node2D
     {
         var civilization = new Civilization
         {
-            Id = 0,
             Name = "Player",
             PlayerCivilization = true,
             TerritoryColor = PlayerColor
@@ -167,7 +169,6 @@ public partial class HexMap : Node2D
         {
             var civilization = new Civilization
             {
-                Id = i,
                 Name = $"Civilization {i}",
                 PlayerCivilization = false
             };
@@ -196,22 +197,20 @@ public partial class HexMap : Node2D
         var city = CityScene.Instantiate<City>();
 
         city.HexMap = this;
-        city.Civilization = civilization;
         city.CenterCoordinates = coordinates;
         city.Position = ToLocal(coordinates);
         city.AddTerritory([_hexes[coordinates]]);
         city.AddTerritory(GetSurroundingHexes(coordinates));
         city.CityName = name;
+        city.Civilization = civilization;
 
         AddChild(city);
 
         _hexes[coordinates].IsCityCenter = true;
         _cities[coordinates] = city;
-
-        UpdateCivilizationTerritory(civilization);
     }
 
-    private void UpdateCivilizationTerritory(Civilization civilization)
+    public void UpdateCivilizationTerritory(Civilization civilization)
     {
         foreach (var hex in from city in civilization.Cities from hex in city.Territory select hex)
             CivilizationColorLayer.SetCell(hex.Coordinates, 0, CivilizationColorBase, civilization.TerritoryColorId);

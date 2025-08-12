@@ -48,18 +48,24 @@ public partial class City : Node2D
 
     public Civilization? Civilization
     {
-        private get => _civilization;
+        get => _civilization;
         set
         {
             if (_civilization == value) return;
 
-            _civilization?.Cities.Remove(this);
+            if (_civilization != null)
+            {
+                _civilization.Cities.Remove(this);
+                HexMap?.UpdateCivilizationTerritory(_civilization);
+            }
+
             _civilization = value;
 
             if (_civilization == null) return;
 
             _civilization.Cities.Add(this);
             ImageSprite.Modulate = _civilization.TerritoryColor;
+            HexMap?.UpdateCivilizationTerritory(_civilization);
         }
     }
 
@@ -160,7 +166,10 @@ public partial class City : Node2D
 
     public void AddUnitToBuildQueue(Unit unit)
     {
-        UnitBuildQueue.Add(unit);
+        if (Civilization?.MaximumUnits > Civilization?.Units.Count)
+        {
+            UnitBuildQueue.Add(unit);
+        }
     }
 
     private void SpawnUnit(Unit unit)

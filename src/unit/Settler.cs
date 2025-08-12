@@ -9,6 +9,8 @@ public partial class Settler : Unit
 
         CurrentHealth = MaxHealth = 1;
         CurrentMoves = MaxMoves = 2;
+
+        AttackValue = 0;
     }
 
     public void FoundCity()

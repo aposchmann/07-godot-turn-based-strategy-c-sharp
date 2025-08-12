@@ -67,6 +67,7 @@ public partial class Unit : Node2D
     public int CurrentHealth { get; protected set; }
     public int MaxMoves { get; protected set; }
     public int CurrentMoves { get; protected set; }
+    protected int AttackValue { get; set; }
 
     private bool IsSelected
     {
@@ -82,7 +83,14 @@ public partial class Unit : Node2D
                 V = Image.Modulate.V + (_isSelected ? -0.25f : 0.25f)
             };
 
-            if (_isSelected) UiManager.OnUnitSelected(this);
+            if (_isSelected)
+            {
+                UiManager.OnUnitSelected(this);
+            }
+            else
+            {
+                UiManager.HidePanels();
+            }
         }
     }
 
@@ -90,9 +98,9 @@ public partial class Unit : Node2D
     private Sprite2D Image => _image ??= GetNode<Sprite2D>("Image");
     private Area2D ImageArea => _imageArea ??= GetNode<Area2D>("Image/Area");
 
-    private List<Unit> CurrentUnitLocations => GetUnitLocationsAt(HexMap.GetHex(Coordinates));
+    private List<Unit> CurrentUnitLocations => GetUnitsOn(HexMap.GetHex(Coordinates));
 
-    private void OnHexRightClicked(object? _, HexRightClickedEventArgs eventArgs) => Move(eventArgs.Hex);
+    private void OnHexRightClicked(object? _, HexRightClickedEventArgs eventArgs) => ManualMove(eventArgs.Hex);
 
     public override void _UnhandledInput(InputEvent @event)
     {
@@ -127,27 +135,46 @@ public partial class Unit : Node2D
         HexMap.HexRightClicked += OnHexRightClicked;
     }
 
-    private void Move(Hex hex)
+    private void ManualMove(Hex hex)
     {
         if (!IsSelected) return;
-        if (CurrentMoves < 1) return;
-        if (!CalculateValidMovementHexes().Contains(hex)) return;
-        if (GetUnitLocationsAt(hex).Count > 0) return;
 
-        CurrentUnitLocations.Remove(this);
-
-        Coordinates = hex.Coordinates;
-
-        Position = HexMap.ToLocal(Coordinates);
-
-        CurrentUnitLocations.Add(this);
-
-        CurrentMoves--;
+        Move(hex);
 
         UiManager.OnUnitSelected(this);
     }
 
-    private static List<Unit> GetUnitLocationsAt(Hex hex)
+    protected virtual void Move(Hex hex)
+    {
+        if (CurrentMoves < 1) return;
+        if (!CalculateValidMovementHexes().Contains(hex)) return;
+
+        var unitsOnHex = GetUnitsOn(hex);
+
+        if (unitsOnHex.Count < 1)
+        {
+            CurrentUnitLocations.Remove(this);
+
+            Coordinates = hex.Coordinates;
+
+            Position = HexMap.ToLocal(Coordinates);
+
+            CurrentUnitLocations.Add(this);
+        }
+        else
+        {
+            var defender = unitsOnHex[0];
+
+            if (defender.Civilization != Civilization)
+            {
+                CalculateCombat(this, defender);
+            }
+        }
+
+        CurrentMoves--;
+    }
+
+    private static List<Unit> GetUnitsOn(Hex hex)
     {
         var unitList = UnitLocations.GetValueOrDefault(hex, []);
 
@@ -169,8 +196,33 @@ public partial class Unit : Node2D
 
         Civilization?.Units.Remove(this);
 
-        GetUnitLocationsAt(HexMap.GetHex(Coordinates)).Remove(this);
+        GetUnitsOn(HexMap.GetHex(Coordinates)).Remove(this);
 
         QueueFree();
+    }
+
+    public void RandomMove()
+    {
+        var validMovementHexes = CalculateValidMovementHexes();
+
+        if (validMovementHexes.Count == 0) return;
+
+        Move(validMovementHexes.ElementAt(new Random().Next(CalculateValidMovementHexes().Count)));
+    }
+
+    private static void CalculateCombat(Unit attacker, Unit defender)
+    {
+        defender.CurrentHealth -= attacker.AttackValue;
+        attacker.CurrentHealth -= defender.AttackValue / 2;
+
+        if (defender.CurrentHealth <= 0)
+        {
+            defender.DestroyUnit();
+        }
+
+        if (attacker.CurrentHealth <= 0)
+        {
+            attacker.DestroyUnit();
+        }
     }
 }
