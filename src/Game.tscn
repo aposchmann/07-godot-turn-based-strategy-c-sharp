@@ -1,9 +1,10 @@
-[gd_scene load_steps=14 format=3 uid="uid://bgkdke2xgg40w"]
+[gd_scene load_steps=17 format=3 uid="uid://bgkdke2xgg40w"]
 
 [ext_resource type="Script" uid="uid://bewoc2m7rxspv" path="res://src/ui/Camera.cs" id="1_7omc5"]
 [ext_resource type="Script" uid="uid://8x5ghyweoj8g" path="res://src/map/HexMap.cs" id="2_km1yn"]
 [ext_resource type="Texture2D" uid="uid://sa5w3ko02vl3" path="res://textures/terrain.png" id="3_eu8jo"]
 [ext_resource type="Texture2D" uid="uid://dbtm4g31e3hky" path="res://textures/overlay.png" id="4_dbp7n"]
+[ext_resource type="Script" uid="uid://b3yr2ttdv8hnn" path="res://src/map/HighlightLayer.cs" id="4_eu8jo"]
 [ext_resource type="PackedScene" uid="uid://dnnyh8hw168pi" path="res://src/ui/UiManager.tscn" id="5_km1yn"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kc8ui"]
@@ -39,6 +40,23 @@ texture_region_size = Vector2i(128, 128)
 tile_shape = 3
 tile_size = Vector2i(128, 128)
 sources/0 = SubResource("TileSetAtlasSource_km1yn")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_eu8jo"]
+texture = ExtResource("3_eu8jo")
+texture_region_size = Vector2i(128, 128)
+0:0/0 = 0
+1:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_dbp7n"]
+tile_shape = 3
+tile_size = Vector2i(128, 128)
+sources/0 = SubResource("TileSetAtlasSource_eu8jo")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pk08u"]
 texture = ExtResource("4_dbp7n")
@@ -78,6 +96,10 @@ tile_set = SubResource("TileSet_mu1t8")
 [node name="CivilizationColorLayer" type="TileMapLayer" parent="HexMap"]
 modulate = Color(1, 1, 1, 0.607843)
 tile_set = SubResource("TileSet_eu8jo")
+
+[node name="HighlightLayer" type="TileMapLayer" parent="HexMap"]
+tile_set = SubResource("TileSet_dbp7n")
+script = ExtResource("4_eu8jo")
 
 [node name="BorderLayer" type="TileMapLayer" parent="HexMap"]
 modulate = Color(1, 1, 1, 0.156863)
