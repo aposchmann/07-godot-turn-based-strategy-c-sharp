@@ -29,10 +29,11 @@ public partial class HexMap : Node2D
 
     private TileMapLayer? _baseLayer;
     private TileMapLayer? _borderLayer;
-
-    private PackedScene? _cityScene;
     private TileMapLayer? _civilizationColorLayer;
     private TileMapLayer? _overlayLayer;
+    private HighlightLayer? _highlightLayer;
+
+    private PackedScene? _cityScene;
 
     private Vector2I? _selectedHex;
 
@@ -44,6 +45,7 @@ public partial class HexMap : Node2D
     private TileMapLayer BaseLayer => _baseLayer ??= GetNode<TileMapLayer>("BaseLayer");
     private TileMapLayer BorderLayer => _borderLayer ??= GetNode<TileMapLayer>("BorderLayer");
     private TileMapLayer OverlayLayer => _overlayLayer ??= GetNode<TileMapLayer>("OverlayLayer");
+    private HighlightLayer HighlightLayer => _highlightLayer ??= GetNode<HighlightLayer>("HighlightLayer");
 
     private TileMapLayer CivilizationColorLayer => _civilizationColorLayer
         ??= GetNode<TileMapLayer>("CivilizationColorLayer");
@@ -66,6 +68,8 @@ public partial class HexMap : Node2D
 
         CreatePlayerCivilization(startingLocations[0]);
         CreateAiCivilizations(startingLocations);
+
+        HighlightLayer.SetUp(Width, Height);
     }
 
     public void ProcessEndTurn()
@@ -76,6 +80,8 @@ public partial class HexMap : Node2D
 
             UpdateCivilizationTerritory(civilization);
         });
+
+        HighlightLayer.Refresh();
     }
 
     private void GenerateResources()
@@ -387,6 +393,11 @@ public partial class HexMap : Node2D
 
                 HexSelected?.Invoke(this, new HexSelectedEventArgs { Hex = clickedHex });
 
+                if (clickedHex is { IsCityCenter: true, OwnerCity: not null })
+                {
+                    HighlightLayer.Highlight(clickedHex.OwnerCity);
+                }
+
                 break;
             }
             case InputEventMouseButton { ButtonIndex: Right, Pressed: true }:
@@ -416,6 +427,8 @@ public partial class HexMap : Node2D
         _selectedHex = null;
 
         EmitSignal(SignalName.HexDeselected);
+
+        HighlightLayer.ResetHighlight();
     }
 
     public Hex GetHex(Vector2I coordinates)

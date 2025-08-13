@@ -6,17 +6,17 @@ namespace de.nodapo.turnbasedstrategygame.map;
 
 public partial class HighlightLayer : TileMapLayer
 {
-    private int width;
-    private int height;
+    private int _width;
+    private int _height;
 
-    private List<Hex> highlightedHexes = [];
+    private List<Hex> _highlightedHexes = [];
 
-    private City? highlightedCity;
+    private City? _highlightedCity;
 
-    public void setUp(int width, int height)
+    public void SetUp(int width, int height)
     {
-        this.width = width;
-        this.height = height;
+        _width = width;
+        _height = height;
 
         for (var x = 0; x < width; x++)
         {
@@ -33,27 +33,39 @@ public partial class HighlightLayer : TileMapLayer
     {
         ResetHighlight();
 
-        highlightedCity = city;
+        _highlightedCity = city;
 
-        highlightedCity.Territory.ForEach(hex =>
+        _highlightedCity.Territory.ForEach(hex =>
         {
-            highlightedHexes.Add(hex);
+            _highlightedHexes.Add(hex);
 
             SetCell(hex.Coordinates, -1, new Vector2I(0, 3));
         });
-        
+
         Visible = true;
     }
 
     public void ResetHighlight()
     {
-        foreach (var highlightedHex in highlightedHexes)
+        foreach (var highlightedHex in _highlightedHexes)
         {
             SetCell(highlightedHex.Coordinates, 0, new Vector2I(0, 3));
         }
 
-        highlightedHexes = [];
-        highlightedCity = null;
+        _highlightedHexes = [];
+        _highlightedCity = null;
         Visible = false;
+    }
+
+    public void Refresh()
+    {
+        if (_highlightedCity is not null)
+        {
+            Highlight(_highlightedCity);
+        }
+        else
+        {
+            ResetHighlight();
+        }
     }
 }

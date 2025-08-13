@@ -98,6 +98,7 @@ modulate = Color(1, 1, 1, 0.607843)
 tile_set = SubResource("TileSet_eu8jo")
 
 [node name="HighlightLayer" type="TileMapLayer" parent="HexMap"]
+modulate = Color(0.109341, 0.109341, 0.109341, 0.686275)
 tile_set = SubResource("TileSet_dbp7n")
 script = ExtResource("4_eu8jo")
 
