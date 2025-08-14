@@ -1,0 +1,102 @@
+[gd_scene load_steps=3 format=3 uid="uid://cmutpas3x50gh"]
+
+[ext_resource type="Texture2D" uid="uid://bsf6s2wxbehty" path="res://textures/menu.png" id="1_adkca"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_adkca"]
+font_size = 48
+font_color = Color(0.803922, 0.639216, 0.2, 1)
+shadow_size = 5
+shadow_color = Color(0, 0, 0, 1)
+shadow_offset = Vector2(2, 1)
+
+[node name="MainMenu" type="Node2D"]
+
+[node name="Background" type="Polygon2D" parent="."]
+color = Color(0.121569, 0.239216, 0.4, 1)
+polygon = PackedVector2Array(0, 0, 1152, 0, 1152, 648, 0, 648)
+
+[node name="BackgroundImage" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.156863)
+position = Vector2(625, 325)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("1_adkca")
+
+[node name="Title" type="Label" parent="."]
+custom_minimum_size = Vector2(1152, 150)
+offset_right = 219.0
+offset_bottom = 23.0
+size_flags_horizontal = 4
+text = "HEX-BASED STRATEGY GAME"
+label_settings = SubResource("LabelSettings_adkca")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Settings" type="VBoxContainer" parent="."]
+offset_left = 376.0
+offset_top = 150.0
+offset_right = 776.0
+offset_bottom = 598.0
+size_flags_horizontal = 4
+metadata/_edit_use_anchors_ = true
+
+[node name="SizeSetting" type="HBoxContainer" parent="Settings"]
+layout_mode = 2
+
+[node name="WidthLabel" type="Label" parent="Settings/SizeSetting"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Map Width"
+
+[node name="WidthValue" type="SpinBox" parent="Settings/SizeSetting"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 44.0
+max_value = 106.0
+value = 44.0
+
+[node name="HeightLabel" type="Label" parent="Settings/SizeSetting"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Map Height"
+
+[node name="HeightValue" type="SpinBox" parent="Settings/SizeSetting"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 26.0
+max_value = 66.0
+value = 26.0
+
+[node name="AiSetting" type="HBoxContainer" parent="Settings"]
+layout_mode = 2
+
+[node name="AiLabel" type="Label" parent="Settings/AiSetting"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "AI Civilizations"
+
+[node name="AiValue" type="SpinBox" parent="Settings/AiSetting"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 6.0
+
+[node name="ColorSetting" type="HBoxContainer" parent="Settings"]
+layout_mode = 2
+
+[node name="ColorLabel" type="Label" parent="Settings/ColorSetting"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Player Color"
+
+[node name="ColorValue" type="ColorPickerButton" parent="Settings/ColorSetting"]
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.784314, 0, 0.490196, 1)
+edit_alpha = false
+
+[node name="StartButton" type="Button" parent="Settings"]
+layout_mode = 2
+text = "Start Game"
+
+[node name="QuitButton" type="Button" parent="Settings"]
+layout_mode = 2
+text = "Quit"
